@@ -5,31 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>GagSimulator</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
+        /* CSS переменные для управления цветами */
         :root {
-            --bg-main: #3d5a55;
-            --bg-container: #795548;
-            --border-dark: #4e342e;
+            --bg-container: #8D6E63;
+            --border-dark: #5D4037;
             --text-light: #ffffff;
-            --item-bg-dark: #a1887f;
-            --item-bg-light: #d7ccc8;
-            --item-border: #8d6e63;
+            --item-bg-dark: #BCAAA4;
+            --item-bg-light: #EFEBE9;
+            --item-border: #A1887F;
         }
+
+        /* Анимация для фона на мобильных устройствах */
+        @keyframes pan-background {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Стили для фона */
         html, body {
              overscroll-behavior: none;
-             background-color: var(--bg-main);
+             background-image: url('https://cdn.gamestatic.net/files/editor_uploads/NikolayD/2025/dzen-ivent-v-roblox-grow-a-garden_5.jpg ');
+             background-size: cover;
+             background-position: center center;
+             background-attachment: fixed;
+             min-height: 100vh;
         }
+
+        /* Применение анимации фона на мобильных устройствах */
+        @media (max-width: 768px) {
+            body {
+                animation: pan-background 40s linear infinite;
+            }
+        }
+
         body {
             font-family: 'Press Start 2P', cursive;
             color: var(--text-light);
             text-shadow: 1px 1px #000000;
         }
+
+        /* Стили контейнеров с полупрозрачностью */
         .inventory-container, .modal-content {
-            background-color: var(--bg-container);
+            background-color: rgba(121, 85, 72, 0.9);
             background-image: url('https://devforum-uploads.s3.dualstack.us-east-2.amazonaws.com/uploads/optimized/5X/c/b/2/9/cb293d819c45f471372ce6abe9975205ffff063b_2_500x500.png');
             background-size: 80px;
             border: 4px solid var(--border-dark);
@@ -49,8 +71,9 @@
         .btn-red { background-color: #f44336; color: white; border: 2px solid #d32f2f; border-bottom-width: 5px; }
         .btn-blue { background-color: #2196F3; color: white; border: 2px solid #1976D2; border-bottom-width: 5px; }
         .btn-green { background-color: #4CAF50; color: white; border: 2px solid #388E3C; border-bottom-width: 5px; }
-        .btn-tab { background-color: #6d4c41; color: #d7ccc8; border: 2px solid #4e342e; border-bottom-width: 5px;}
-        .btn-tab.active { background-color: #a1887f; color: white; border-color: #5d4037; }
+        
+        .btn-tab { background-color: #795548; color: #d7ccc8; border: 2px solid #4e342e; border-bottom-width: 5px;}
+        .btn-tab.active { background-color: var(--item-border); color: white; border-color: #5d4037; }
 
 
         .modal-backdrop { background-color: rgba(0, 0, 0, 0.75); z-index: 1000; }
@@ -74,7 +97,17 @@
         .delete-item-button { position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background-color: #f44336; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; line-height: 1rem; font-weight: bold; cursor: pointer; border: 1px solid white; z-index: 11; opacity: 0; transition: opacity 0.2s; }
         .inventory-item:hover .delete-item-button { opacity: 1; }
         
-        #sound-toggle { position: fixed; top: 10px; right: 10px; z-index: 999; font-size: 1.5rem; cursor: pointer; background: rgba(0,0,0,0.3); padding: 5px; border-radius: 8px; }
+        #sound-toggle { 
+            position: fixed; 
+            top: 10px; 
+            right: 10px; 
+            z-index: 999; 
+            font-size: 1.5rem; 
+            cursor: pointer; 
+            background: transparent; /* Фон сделан прозрачным */
+            padding: 5px; 
+            border-radius: 8px; 
+        }
 
         .scroll-container {
             overflow-x: auto;
@@ -121,8 +154,16 @@
 </head>
 <body class="p-2 md:p-4">
     
+    <!-- Аудио элементы -->
+    <audio id="background-music" loop src="https://github.com/GAG-simulator/zen/raw/refs/heads/main/Edvard-grieg-morning-mood.mp3"></audio>
+    <audio id="sound-click" src="https://github.com/GAG-simulator/zen/raw/refs/heads/main/buttonsound.wav"></audio>
+    <audio id="sound-open" src="https://github.com/GAG-simulator/zen/raw/refs/heads/main/hatchegg.wav"></audio>
+    <audio id="sound-win" src="https://github.com/GAG-simulator/zen/raw/refs/heads/main/getting%20pet%20or%20seed.wav"></audio>
+    <audio id="sound-close" src="https://github.com/GAG-simulator/zen/raw/refs/heads/main/close.wav"></audio>
+    <audio id="sound-delete" src="https://github.com/GAG-simulator/zen/raw/refs/heads/main/deleting%20all%20inventory%20or%201%20item.wav"></audio>
+
     <div id="main-content">
-        <div id="sound-toggle">🔇</div>
+        <div id="sound-toggle">🔊</div>
 
         <div class="max-w-7xl mx-auto">
             <div class="inventory-container p-2 md:p-4 rounded-lg mb-4">
@@ -236,142 +277,142 @@
 
 
     <script>
+        // --- DATA ---
         const rarityOrder = ['Common', 'Uncommon', 'Rare', 'Legendary', 'Mythical', 'Prismatic', 'Divine', 'Event'];
         
-        // --- DATA ---
-        // I've cleaned up the image URLs by removing "/revision/latest" for better stability.
         const allItemData = {
             'kitsune_crate': {
                 id: 'kitsune_crate',
                 name: 'Kitsune Crate',
                 rarity: 'Event',
                 rarityClass: 'rarity-Event',
-                image: 'https://static.wikia.nocookie.net/growagarden/images/9/90/KitsuneChest.png',
+                image: 'https://static.wikia.nocookie.net/growagarden/images/9/90/KitsuneChest.png/revision/latest',
                 type: 'crate',
                 items: [
-                    { name: 'Dezen', type: 'seed', chance: 34.5, rarity: 'Uncommon', rarityClass: 'rarity-Uncommon', image: 'https://static.wikia.nocookie.net/growagarden/images/a/a5/Dezen.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/5/5c/DezenSeed.png' },
-                    { name: 'Maneki-neko', type: 'animal', chance: 34.5, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/6/64/ManekiNeko.png' },
-                    { name: 'Lucky Bamboo', type: 'seed', chance: 14.5, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/c/c0/LuckyBamboo.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/e/ea/LuckyBambooSeed.png' },
-                    { name: 'Kodama', type: 'animal', chance: 14.5, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/1/18/Kodama.png' },
-                    { name: 'Tranquil Bloom', type: 'seed', chance: 1, rarity: 'Prismatic', rarityClass: 'rarity-Prismatic', image: 'https://static.wikia.nocookie.net/growagarden/images/9/95/TranquilBloom.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/f/f0/TranquilBloomSeed.png' },
-                    { name: 'Corrupted Kitsune', type: 'animal', chance: 1, rarity: 'Prismatic', rarityClass: 'rarity-Prismatic', image: 'https://static.wikia.nocookie.net/growagarden/images/2/2a/CorruptedKitsune.png' }
+                    { name: 'Dezen', type: 'seed', chance: 34.5, rarity: 'Uncommon', rarityClass: 'rarity-Uncommon', image: 'https://static.wikia.nocookie.net/growagarden/images/a/a5/Dezen.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/5/5c/DezenSeed.png/revision/latest?cb=20250728045309' },
+                    { name: 'Maneki-neko', type: 'animal', chance: 34.5, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/6/64/ManekiNeko.png/revision/latest' },
+                    { name: 'Lucky Bamboo', type: 'seed', chance: 14.5, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/c/c0/LuckyBamboo.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/e/ea/LuckyBambooSeed.png/revision/latest?cb=20250726082624' },
+                    { name: 'Kodama', type: 'animal', chance: 14.5, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/1/18/Kodama.png/revision/latest' },
+                    { name: 'Tranquil Bloom', type: 'seed', chance: 1, rarity: 'Prismatic', rarityClass: 'rarity-Prismatic', image: 'https://static.wikia.nocookie.net/growagarden/images/9/95/TranquilBloom.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/f/f0/TranquilBloomSeed.png/revision/latest?cb=20250726081837' },
+                    { name: 'Corrupted Kitsune', type: 'animal', chance: 1, rarity: 'Prismatic', rarityClass: 'rarity-Prismatic', image: 'https://static.wikia.nocookie.net/growagarden/images/2/2a/CorruptedKitsune.png/revision/latest' }
                 ]
             },
-            'egg': { id: 'egg', name: 'Zen Egg', rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/1/14/Zeneg.png', type: 'egg', items: [
-                { name: 'Shiba Inu', type: 'animal', chance: 40, rarity: 'Uncommon', rarityClass: 'rarity-Uncommon', image: 'https://static.wikia.nocookie.net/growagarden/images/b/bb/Shiba_Inu.png' },
-                { name: 'Nihonzaru', type: 'animal', chance: 31, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/d/db/Nihonzaru_.png' },
-                { name: 'Tanuki', type: 'animal', chance: 20.82, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/1/1f/Tanuki_.png' },
-                { name: 'Tanchozuru', type: 'animal', chance: 4.6, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/d/d3/Tanchozuru_.png' },
-                { name: 'Kappa', type: 'animal', chance: 3.5, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/8/84/Kappa_.png' },
-                { name: 'Kitsune', type: 'animal', chance: 0.08, rarity: 'Prismatic', rarityClass: 'rarity-Prismatic', image: 'https://static.wikia.nocookie.net/growagarden/images/4/4d/Kitsune_.png' }
+            'egg': { id: 'egg', name: 'Zen Egg', rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/1/14/Zeneg.png/revision/latest', type: 'egg', items: [
+                { name: 'Shiba Inu', type: 'animal', chance: 40, rarity: 'Uncommon', rarityClass: 'rarity-Uncommon', image: 'https://static.wikia.nocookie.net/growagarden/images/b/bb/Shiba_Inu.png/revision/latest' },
+                { name: 'Nihonzaru', type: 'animal', chance: 31, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/d/db/Nihonzaru_.png/revision/latest' },
+                { name: 'Tanuki', type: 'animal', chance: 20.82, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/1/1f/Tanuki_.png/revision/latest' },
+                { name: 'Tanchozuru', type: 'animal', chance: 4.6, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/d/d3/Tanchozuru_.png/revision/latest' },
+                { name: 'Kappa', type: 'animal', chance: 3.5, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/8/84/Kappa_.png/revision/latest' },
+                { name: 'Kitsune', type: 'animal', chance: 0.08, rarity: 'Prismatic', rarityClass: 'rarity-Prismatic', image: 'https://static.wikia.nocookie.net/growagarden/images/4/4d/Kitsune_.png/revision/latest' }
             ]},
-            'seed': { id: 'seed', name: 'Exotic Zen Seed Pack', rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/8/85/ExoticZenSeedPack.png', type: 'seed', items: [
-                { name: 'Monoblooma', type: 'seed', chance: 40, rarity: 'Uncommon', rarityClass: 'rarity-Uncommon', image: 'https://static.wikia.nocookie.net/growagarden/images/a/ad/MonobloomaCrop.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/a/ae/MonobloomaSeed.png' },
-                { name: 'Serenity', type: 'seed', chance: 25, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/d/d9/SerenityCrop.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/1/15/SerenitySeed.png' },
-                { name: 'Taro Flower', type: 'seed', chance: 20, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/a/a1/TaroFlowerCrop.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/a/a3/TaroFlowerSeed.png' },
-                { name: 'Zen Rocks', type: 'seed', chance: 10, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/c/c9/ZenRocksCrop.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/6/68/ZenRocksSeed.png' },
-                { name: 'Hinomai', type: 'seed', chance: 4.5, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/4/41/HinomaiCrop.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/b/bb/HinomaiSeed.png' },
-                { name: 'Maple Apple', type: 'seed', chance: 0.5, rarity: 'Prismatic', rarityClass: 'rarity-Prismatic', image: 'https://static.wikia.nocookie.net/growagarden/images/7/7f/MapleAppleCrop.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/1/16/MapleAppleSeed.png' }
+            'seed': { id: 'seed', name: 'Exotic Zen Seed Pack', rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/8/85/ExoticZenSeedPack.png/revision/latest', type: 'seed', items: [
+                { name: 'Monoblooma', type: 'seed', chance: 40, rarity: 'Uncommon', rarityClass: 'rarity-Uncommon', image: 'https://static.wikia.nocookie.net/growagarden/images/a/ad/MonobloomaCrop.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/a/ae/MonobloomaSeed.png/revision/latest' },
+                { name: 'Serenity', type: 'seed', chance: 25, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/d/d9/SerenityCrop.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/1/15/SerenitySeed.png/revision/latest' },
+                { name: 'Taro Flower', type: 'seed', chance: 20, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/a/a1/TaroFlowerCrop.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/a/a3/TaroFlowerSeed.png/revision/latest' },
+                { name: 'Zen Rocks', type: 'seed', chance: 10, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/c/c9/ZenRocksCrop.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/6/68/ZenRocksSeed.png/revision/latest' },
+                { name: 'Hinomai', type: 'seed', chance: 4.5, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/4/41/HinomaiCrop.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/b/bb/HinomaiSeed.png/revision/latest' },
+                { name: 'Maple Apple', type: 'seed', chance: 0.5, rarity: 'Prismatic', rarityClass: 'rarity-Prismatic', image: 'https://static.wikia.nocookie.net/growagarden/images/7/7f/MapleAppleCrop.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/1/16/MapleAppleSeed.png/revision/latest' }
             ]},
-            'bug': { id: 'bug', name: 'Bug Egg', rarity: 'Divine', rarityClass: 'rarity-Divine', image: 'https://static.wikia.nocookie.net/growagarden/images/8/86/Bugeggimage.png', type: 'egg', items: [
-                { name: 'Caterpillar', type: 'bug', chance: 40, rarity: 'Common', rarityClass: 'rarity-Common', image: 'https://static.wikia.nocookie.net/growagarden/images/a/a4/Caterpillar_no_back.png' },
-                { name: 'Snail', type: 'bug', chance: 30, rarity: 'Uncommon', rarityClass: 'rarity-Uncommon', image: 'https://static.wikia.nocookie.net/growagarden/images/d/d2/Snail_Icon.png' },
-                { name: 'Giant Ant', type: 'bug', chance: 25, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/f/ff/Ant_4.png' },
-                { name: 'Praying Mantis', type: 'bug', chance: 4, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/2/25/PrayingMantis.png' },
-                { name: 'Dragonfly', type: 'bug', chance: 1, rarity: 'Divine', rarityClass: 'rarity-Divine', image: 'https://static.wikia.nocookie.net/growagarden/images/c/c9/DragonflyIcon.png' }
+            'bug': { id: 'bug', name: 'Bug Egg', rarity: 'Divine', rarityClass: 'rarity-Divine', image: 'https://static.wikia.nocookie.net/growagarden/images/8/86/Bugeggimage.png/revision/latest', type: 'egg', items: [
+                { name: 'Caterpillar', type: 'bug', chance: 40, rarity: 'Common', rarityClass: 'rarity-Common', image: 'https://static.wikia.nocookie.net/growagarden/images/a/a4/Caterpillar_no_back.png/revision/latest' },
+                { name: 'Snail', type: 'bug', chance: 30, rarity: 'Uncommon', rarityClass: 'rarity-Uncommon', image: 'https://static.wikia.nocookie.net/growagarden/images/d/d2/Snail_Icon.png/revision/latest' },
+                { name: 'Giant Ant', type: 'bug', chance: 25, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/f/ff/Ant_4.png/revision/latest' },
+                { name: 'Praying Mantis', type: 'bug', chance: 4, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/2/25/PrayingMantis.png/revision/latest' },
+                { name: 'Dragonfly', type: 'bug', chance: 1, rarity: 'Divine', rarityClass: 'rarity-Divine', image: 'https://static.wikia.nocookie.net/growagarden/images/c/c9/DragonflyIcon.png/revision/latest' }
             ]},
-            'normal_seed': { id: 'normal_seed', name: 'Normal Seed Pack', rarity: 'Common', rarityClass: 'rarity-Common', image: 'https://static.wikia.nocookie.net/growagarden/images/c/c1/Normal_Seed_Pack.png', type: 'seed', items: [
-                { name: 'Watermelon', type: 'normal_seed', chance: 12.5, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/3/31/Watermelonfruiticon.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/6/68/WatermelonSeedIcon.png' },
-                { name: 'Pumpkin', type: 'normal_seed', chance: 12.5, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/3/36/Pumpkincropp.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/e/e9/Pumpkin_seed.png' },
-                { name: 'Cactus', type: 'normal_seed', chance: 12.5, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/8/86/Cactus_fruit_icon.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/c/c4/CactusSeedIcon.png' },
-                { name: 'Dragon Fruit', type: 'normal_seed', chance: 12.5, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/4/4a/Dragonfruitthumb.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/c/c5/Dragon_Fruit_Seed.png' },
-                { name: 'Pineapple', type: 'normal_seed', chance: 7.7, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/c/cc/PineappleFruitIcon.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/6/6d/PineappleSeed.png' },
-                { name: 'Peach', type: 'normal_seed', chance: 12.5, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/1/13/Transparent_Peach.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/3/3f/PeachSeed.png' },
-                { name: 'Raspberry', type: 'normal_seed', chance: 12.5, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/1/1f/Raspberry.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/9/94/RaspberrySeedIcon.png' },
-                { name: 'Mango', type: 'normal_seed', chance: 12.5, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/0/0e/MangoFruitIcon.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/f/fd/Mango_seed.png' }
+            'normal_seed': { id: 'normal_seed', name: 'Normal Seed Pack', rarity: 'Common', rarityClass: 'rarity-Common', image: 'https://static.wikia.nocookie.net/growagarden/images/c/c1/Normal_Seed_Pack.png/revision/latest', type: 'seed', items: [
+                { name: 'Watermelon', type: 'normal_seed', chance: 12.5, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/3/31/Watermelonfruiticon.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/6/68/WatermelonSeedIcon.png/revision/latest' },
+                { name: 'Pumpkin', type: 'normal_seed', chance: 12.5, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/3/36/Pumpkincropp.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/e/e9/Pumpkin_seed.png/revision/latest' },
+                { name: 'Cactus', type: 'normal_seed', chance: 12.5, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/8/86/Cactus_fruit_icon.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/c/c4/CactusSeedIcon.png/revision/latest' },
+                { name: 'Dragon Fruit', type: 'normal_seed', chance: 12.5, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/4/4a/Dragonfruitthumb.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/c/c5/Dragon_Fruit_Seed.png/revision/latest' },
+                { name: 'Pineapple', type: 'normal_seed', chance: 7.7, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/c/cc/PineappleFruitIcon.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/6/6d/PineappleSeed.png/revision/latest' },
+                { name: 'Peach', type: 'normal_seed', chance: 12.5, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/1/13/Transparent_Peach.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/3/3f/PeachSeed.png/revision/latest' },
+                { name: 'Raspberry', type: 'normal_seed', chance: 12.5, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/1/1f/Raspberry.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/9/94/RaspberrySeedIcon.png/revision/latest' },
+                { name: 'Mango', type: 'normal_seed', chance: 12.5, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/0/0e/MangoFruitIcon.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/f/fd/Mango_seed.png/revision/latest' }
             ]},
-            'oasis_egg': { id: 'oasis_egg', name: 'Oasis Egg', rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/9/90/OasisEgg.webp', type: 'egg', items: [
-                { name: 'Meerkat', type: 'animal', chance: 45, rarity: 'Uncommon', rarityClass: 'rarity-Uncommon', image: 'https://static.wikia.nocookie.net/growagarden/images/c/c2/Meerkat.png' },
-                { name: 'Sand Snake', type: 'animal', chance: 34.5, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/a/a4/SandSnakeIcon.png' },
-                { name: 'Axolotl', type: 'animal', chance: 15, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/0/0f/AxolotlIcon.png' },
-                { name: 'Hyacinth Macaw', type: 'animal', chance: 5, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/7/77/HyacinthMacawIcon.png' },
-                { name: 'Fennec Fox', type: 'animal', chance: 0.5, rarity: 'Prismatic', rarityClass: 'rarity-Prismatic', image: 'https://static.wikia.nocookie.net/growagarden/images/e/e8/FennecFoxIcon.png' }
+            'oasis_egg': { id: 'oasis_egg', name: 'Oasis Egg', rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/9/90/OasisEgg.webp/revision/latest', type: 'egg', items: [
+                { name: 'Meerkat', type: 'animal', chance: 45, rarity: 'Uncommon', rarityClass: 'rarity-Uncommon', image: 'https://static.wikia.nocookie.net/growagarden/images/c/c2/Meerkat.png/revision/latest' },
+                { name: 'Sand Snake', type: 'animal', chance: 34.5, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/a/a4/SandSnakeIcon.png/revision/latest' },
+                { name: 'Axolotl', type: 'animal', chance: 15, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/0/0f/AxolotlIcon.png/revision/latest' },
+                { name: 'Hyacinth Macaw', type: 'animal', chance: 5, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/7/77/HyacinthMacawIcon.png/revision/latest' },
+                { name: 'Fennec Fox', type: 'animal', chance: 0.5, rarity: 'Prismatic', rarityClass: 'rarity-Prismatic', image: 'https://static.wikia.nocookie.net/growagarden/images/e/e8/FennecFoxIcon.png/revision/latest' }
             ]},
-            'rare_summer_egg': { id: 'rare_summer_egg', name: 'Rare Summer Egg', rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/6/6c/RareSummerEgg.png', type: 'egg', items: [
-                { name: 'Flamingo', type: 'animal', chance: 30, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/e/ec/FlamingoIcon.webp' },
-                { name: 'Toucan', type: 'animal', chance: 25, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/1/10/ToucanIcon.webp' },
-                { name: 'Sea Turtle', type: 'animal', chance: 20, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/a/ad/SeaTurtleIcon.webp' },
-                { name: 'Orangutan', type: 'animal', chance: 15, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/4/47/OrangutanIcon.webp' },
-                { name: 'Seal', type: 'animal', chance: 10, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/f/f9/SealIcon.webp' }
+            'rare_summer_egg': { id: 'rare_summer_egg', name: 'Rare Summer Egg', rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/6/6c/RareSummerEgg.png/revision/latest', type: 'egg', items: [
+                { name: 'Flamingo', type: 'animal', chance: 30, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/e/ec/FlamingoIcon.webp/revision/latest' },
+                { name: 'Toucan', type: 'animal', chance: 25, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/1/10/ToucanIcon.webp/revision/latest' },
+                { name: 'Sea Turtle', type: 'animal', chance: 20, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/a/ad/SeaTurtleIcon.webp/revision/latest' },
+                { name: 'Orangutan', type: 'animal', chance: 15, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/4/47/OrangutanIcon.webp/revision/latest' },
+                { name: 'Seal', type: 'animal', chance: 10, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/f/f9/SealIcon.webp/revision/latest' }
             ]},
-            'dinosaur_egg': { id: 'dinosaur_egg', name: 'Dinosaur Egg', rarity: 'Event', rarityClass: 'rarity-Event', image: 'https://static.wikia.nocookie.net/growagarden/images/2/29/Dinosauregg.png', type: 'egg', items: [
-                { name: 'Raptor', type: 'animal', chance: 35, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/0/08/Raptor.png' },
-                { name: 'Triceratops', type: 'animal', chance: 32.5, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/a/a1/Triceratops.png' },
-                { name: 'Stegosaurus', type: 'animal', chance: 28, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/c/cd/Stegosaurus.png' },
-                { name: 'Pterodactyl', type: 'animal', chance: 3, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/4/49/Pterodactyl.png' },
-                { name: 'Brontosaurus', type: 'animal', chance: 1, rarity: 'Prismatic', rarityClass: 'rarity-Prismatic', image: 'https://static.wikia.nocookie.net/growagarden/images/4/47/Brontosaurus.png' },
-                { name: 'T-Rex', type: 'animal', chance: 0.5, rarity: 'Divine', rarityClass: 'rarity-Divine', image: 'https://static.wikia.nocookie.net/growagarden/images/f/f8/T-Rex.png' }
+            'dinosaur_egg': { id: 'dinosaur_egg', name: 'Dinosaur Egg', rarity: 'Event', rarityClass: 'rarity-Event', image: 'https://static.wikia.nocookie.net/growagarden/images/2/29/Dinosauregg.png/revision/latest', type: 'egg', items: [
+                { name: 'Raptor', type: 'animal', chance: 35, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/0/08/Raptor.png/revision/latest' },
+                { name: 'Triceratops', type: 'animal', chance: 32.5, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/a/a1/Triceratops.png/revision/latest' },
+                { name: 'Stegosaurus', type: 'animal', chance: 28, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/c/cd/Stegosaurus.png/revision/latest' },
+                { name: 'Pterodactyl', type: 'animal', chance: 3, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/4/49/Pterodactyl.png/revision/latest' },
+                { name: 'Brontosaurus', type: 'animal', chance: 1, rarity: 'Prismatic', rarityClass: 'rarity-Prismatic', image: 'https://static.wikia.nocookie.net/growagarden/images/4/47/Brontosaurus.png/revision/latest' },
+                { name: 'T-Rex', type: 'animal', chance: 0.5, rarity: 'Divine', rarityClass: 'rarity-Divine', image: 'https://static.wikia.nocookie.net/growagarden/images/f/f8/T-Rex.png/revision/latest' }
             ]},
-            'anti_bee_egg': { id: 'anti_bee_egg', name: 'Anti Bee Egg', rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/e/e2/AntiBeeEgg.png', type: 'egg', items: [
-                { name: 'Wasp', type: 'bug', chance: 55, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/f/f8/The_Wasp.png' },
-                { name: 'Tarantula Hawk', type: 'bug', chance: 30, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/7/78/The_Tarantula_Hawk.png' },
-                { name: 'Moth', type: 'bug', chance: 13.75, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/0/09/Moth.png' },
-                { name: 'Butterfly', type: 'bug', chance: 1, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/1/18/Thy_Butterfly_V2.png' },
-                { name: 'Disco Bee', type: 'bug', chance: 0.25, rarity: 'Prismatic', rarityClass: 'rarity-Prismatic', image: 'https://static.wikia.nocookie.net/growagarden/images/f/f2/DiscoBeeIcon.gif' }
+            'anti_bee_egg': { id: 'anti_bee_egg', name: 'Anti Bee Egg', rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/e/e2/AntiBeeEgg.png/revision/latest', type: 'egg', items: [
+                { name: 'Wasp', type: 'bug', chance: 55, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/f/f8/The_Wasp.png/revision/latest' },
+                { name: 'Tarantula Hawk', type: 'bug', chance: 30, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/7/78/The_Tarantula_Hawk.png/revision/latest' },
+                { name: 'Moth', type: 'bug', chance: 13.75, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/0/09/Moth.png/revision/latest' },
+                { name: 'Butterfly', type: 'bug', chance: 1, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/1/18/Thy_Butterfly_V2.png/revision/latest' },
+                { name: 'Disco Bee', type: 'bug', chance: 0.25, rarity: 'Prismatic', rarityClass: 'rarity-Prismatic', image: 'https://static.wikia.nocookie.net/growagarden/images/f/f2/DiscoBeeIcon.gif/revision/latest' }
             ]},
-            'night_egg': { id: 'night_egg', name: 'Night Egg', rarity: 'Event', rarityClass: 'rarity-Event', image: 'https://static.wikia.nocookie.net/growagarden/images/7/71/Night_Egg.png', type: 'egg', items: [
-                { name: 'Hedgehog', type: 'animal', chance: 47, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/4/46/HedgehogPet.png' },
-                { name: 'Mole', type: 'animal', chance: 23.5, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/6/63/Mole.png' },
-                { name: 'Frog', type: 'animal', chance: 16.74, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/5/55/FrogV2.png' },
-                { name: 'Echo Frog', type: 'animal', chance: 8.23, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/3/30/Echo_frog.png' },
-                { name: 'Night Owl', type: 'animal', chance: 3.53, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/3/3e/NightOwlPic.png' },
-                { name: 'Raccoon', type: 'animal', chance: 0.1, rarity: 'Divine', rarityClass: 'rarity-Divine', image: 'https://static.wikia.nocookie.net/growagarden/images/7/73/Racoon.png' }
+            'night_egg': { id: 'night_egg', name: 'Night Egg', rarity: 'Event', rarityClass: 'rarity-Event', image: 'https://static.wikia.nocookie.net/growagarden/images/7/71/Night_Egg.png/revision/latest', type: 'egg', items: [
+                { name: 'Hedgehog', type: 'animal', chance: 47, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/4/46/HedgehogPet.png/revision/latest' },
+                { name: 'Mole', type: 'animal', chance: 23.5, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/6/63/Mole.png/revision/latest' },
+                { name: 'Frog', type: 'animal', chance: 16.74, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/5/55/FrogV2.png/revision/latest' },
+                { name: 'Echo Frog', type: 'animal', chance: 8.23, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/3/30/Echo_frog.png/revision/latest' },
+                { name: 'Night Owl', type: 'animal', chance: 3.53, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/3/3e/NightOwlPic.png/revision/latest' },
+                { name: 'Raccoon', type: 'animal', chance: 0.1, rarity: 'Divine', rarityClass: 'rarity-Divine', image: 'https://static.wikia.nocookie.net/growagarden/images/7/73/Racoon.png/revision/latest' }
             ]},
-            'bee_egg': { id: 'bee_egg', name: 'Bee Egg', rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/8/8d/BeeEgg.png', type: 'egg', items: [
-                { name: 'Bee', type: 'bug', chance: 65, rarity: 'Uncommon', rarityClass: 'rarity-Uncommon', image: 'https://static.wikia.nocookie.net/growagarden/images/f/f2/Beee.png' },
-                { name: 'Honey Bee', type: 'bug', chance: 25, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/1/14/HoneyBee.png' },
-                { name: 'Bear Bee', type: 'bug', chance: 5, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/8/8b/Bearbeee1.png' },
-                { name: 'Petal Bee', type: 'bug', chance: 4, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/5/52/Petalbee.png' },
-                { name: 'Queen Bee', type: 'bug', chance: 1, rarity: 'Prismatic', rarityClass: 'rarity-Prismatic', image: 'https://static.wikia.nocookie.net/growagarden/images/7/7a/Queen_bee.png' }
+            'bee_egg': { id: 'bee_egg', name: 'Bee Egg', rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/8/8d/BeeEgg.png/revision/latest', type: 'egg', items: [
+                { name: 'Bee', type: 'bug', chance: 65, rarity: 'Uncommon', rarityClass: 'rarity-Uncommon', image: 'https://static.wikia.nocookie.net/growagarden/images/f/f2/Beee.png/revision/latest' },
+                { name: 'Honey Bee', type: 'bug', chance: 25, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/1/14/HoneyBee.png/revision/latest' },
+                { name: 'Bear Bee', type: 'bug', chance: 5, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/8/8b/Bearbeee1.png/revision/latest' },
+                { name: 'Petal Bee', type: 'bug', chance: 4, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/5/52/Petalbee.png/revision/latest' },
+                { name: 'Queen Bee', type: 'bug', chance: 1, rarity: 'Prismatic', rarityClass: 'rarity-Prismatic', image: 'https://static.wikia.nocookie.net/growagarden/images/7/7a/Queen_bee.png/revision/latest' }
             ]},
-            'night_seed_pack': { id: 'night_seed_pack', name: 'Night Seed Pack', rarity: 'Event', rarityClass: 'rarity-Event', image: 'https://static.wikia.nocookie.net/growagarden/images/3/34/NightSeedPackRev.PNG', type: 'seed', items: [
-                { name: 'Nightshade', type: 'seed', chance: 40, rarity: 'Uncommon', rarityClass: 'rarity-Uncommon', image: 'https://static.wikia.nocookie.net/growagarden/images/d/dd/Flower.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/4/41/NightshadeSeeds.png' },
-                { name: 'Glowshroom', type: 'seed', chance: 20, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/7/75/GlowShroomFruit.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/8/85/GlowshroomSeed.png' },
-                { name: 'Mint', type: 'seed', chance: 15, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/0/09/MintFruit.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/c/cc/Mint_seed.png' },
-                { name: 'Moonflower', type: 'seed', chance: 10, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/a/a0/MoonFlowerCropsIcon.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/a/a5/MoonFlowerSeed.png' },
-                { name: 'Starfruit', type: 'seed', chance: 9.5, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/6/62/StarFruitFruit.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/0/0f/StarFruitSeed.png' },
-                { name: 'Moonglow', type: 'seed', chance: 5, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/e/e0/MoonglowProduce.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/7/7b/Moonglow_Seed.png' },
-                { name: 'Moon Blossom', type: 'seed', chance: 0.5, rarity: 'Divine', rarityClass: 'rarity-Divine', image: 'https://static.wikia.nocookie.net/growagarden/images/7/77/MoonBlossomBetterQuality.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/b/b2/Moon_Blossom_Seed.png' }
+            'night_seed_pack': { id: 'night_seed_pack', name: 'Night Seed Pack', rarity: 'Event', rarityClass: 'rarity-Event', image: 'https://static.wikia.nocookie.net/growagarden/images/3/34/NightSeedPackRev.PNG/revision/latest', type: 'seed', items: [
+                { name: 'Nightshade', type: 'seed', chance: 40, rarity: 'Uncommon', rarityClass: 'rarity-Uncommon', image: 'https://static.wikia.nocookie.net/growagarden/images/d/dd/Flower.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/4/41/NightshadeSeeds.png/revision/latest' },
+                { name: 'Glowshroom', type: 'seed', chance: 20, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/7/75/GlowShroomFruit.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/8/85/GlowshroomSeed.png/revision/latest' },
+                { name: 'Mint', type: 'seed', chance: 15, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/0/09/MintFruit.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/c/cc/Mint_seed.png/revision/latest' },
+                { name: 'Moonflower', type: 'seed', chance: 10, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/a/a0/MoonFlowerCropsIcon.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/a/a5/MoonFlowerSeed.png/revision/latest' },
+                { name: 'Starfruit', type: 'seed', chance: 9.5, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/6/62/StarFruitFruit.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/0/0f/StarFruitSeed.png/revision/latest' },
+                { name: 'Moonglow', type: 'seed', chance: 5, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/e/e0/MoonglowProduce.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/7/7b/Moonglow_Seed.png/revision/latest' },
+                { name: 'Moon Blossom', type: 'seed', chance: 0.5, rarity: 'Divine', rarityClass: 'rarity-Divine', image: 'https://static.wikia.nocookie.net/growagarden/images/7/77/MoonBlossomBetterQuality.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/b/b2/Moon_Blossom_Seed.png/revision/latest' }
             ]},
-            'ancient_seed_pack': { id: 'ancient_seed_pack', name: 'Ancient Seed Pack', rarity: 'Event', rarityClass: 'rarity-Event', image: 'https://static.wikia.nocookie.net/growagarden/images/b/bf/AncientSeedPack1.png', type: 'seed', items: [
-                { name: 'Stonebite', type: 'seed', chance: 40, rarity: 'Uncommon', rarityClass: 'rarity-Uncommon', image: 'https://static.wikia.nocookie.net/growagarden/images/3/39/Stonebite_Crop.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/0/0a/Stonebiteseed.png' },
-                { name: 'Paradise Petal', type: 'seed', chance: 25, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/d/df/Paradise_Petal_Crop.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/9/94/Paradisepetalseed.png' },
-                { name: 'Horned Dinoshroom', type: 'seed', chance: 20, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/9/93/Horned_Dinoshroom_Crop.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/9/94/Horneddinoshroomseed.png' },
-                { name: 'Boneboo', type: 'seed', chance: 10, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/e/e7/Boneboo_Crop.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/2/24/Bonebooseed.png' },
-                { name: 'Firefly Fern', type: 'seed', chance: 4.5, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/d/de/Firefly_Fern_Crop.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/9/9d/Fireflyfernseed.png' },
-                { name: 'Fossilight', type: 'seed', chance: 0.5, rarity: 'Prismatic', rarityClass: 'rarity-Prismatic', image: 'https://static.wikia.nocookie.net/growagarden/images/7/71/Fossilight_Fruit_Crop.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/9/91/Fossilightfruitseed.png' }
+            'ancient_seed_pack': { id: 'ancient_seed_pack', name: 'Ancient Seed Pack', rarity: 'Event', rarityClass: 'rarity-Event', image: 'https://static.wikia.nocookie.net/growagarden/images/b/bf/AncientSeedPack1.png/revision/latest', type: 'seed', items: [
+                { name: 'Stonebite', type: 'seed', chance: 40, rarity: 'Uncommon', rarityClass: 'rarity-Uncommon', image: 'https://static.wikia.nocookie.net/growagarden/images/3/39/Stonebite_Crop.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/0/0a/Stonebiteseed.png/revision/latest' },
+                { name: 'Paradise Petal', type: 'seed', chance: 25, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/d/df/Paradise_Petal_Crop.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/9/94/Paradisepetalseed.png/revision/latest' },
+                { name: 'Horned Dinoshroom', type: 'seed', chance: 20, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/9/93/Horned_Dinoshroom_Crop.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/9/94/Horneddinoshroomseed.png/revision/latest' },
+                { name: 'Boneboo', type: 'seed', chance: 10, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/e/e7/Boneboo_Crop.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/2/24/Bonebooseed.png/revision/latest' },
+                { name: 'Firefly Fern', type: 'seed', chance: 4.5, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/d/de/Firefly_Fern_Crop.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/9/9d/Fireflyfernseed.png/revision/latest' },
+                { name: 'Fossilight', type: 'seed', chance: 0.5, rarity: 'Prismatic', rarityClass: 'rarity-Prismatic', image: 'https://static.wikia.nocookie.net/growagarden/images/7/71/Fossilight_Fruit_Crop.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/9/91/Fossilightfruitseed.png/revision/latest' }
             ]},
-            'summer_seed_pack': { id: 'summer_seed_pack', name: 'Summer Seed Pack', rarity: 'Event', rarityClass: 'rarity-Event', image: 'https://static.wikia.nocookie.net/growagarden/images/d/db/Summerseedpack.png', type: 'seed', items: [
-                { name: 'Wild Carrot', type: 'seed', chance: 40, rarity: 'Uncommon', rarityClass: 'rarity-Uncommon', image: 'https://static.wikia.nocookie.net/growagarden/images/6/62/Wild_Carrot_Produce.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/a/a1/Wild_Carrot_Seed.png' },
-                { name: 'Pear', type: 'seed', chance: 25, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/a/a1/Regpear.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/d/db/PearSeed.png' },
-                { name: 'Cantaloupe', type: 'seed', chance: 20, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/6/68/Cantaloupe.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/3/33/Cantaloupe_Seed.png' },
-                { name: 'Parasol Flower', type: 'seed', chance: 10, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/b/b2/Parasol_Flower.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/7/72/Parasol_Flower_Seed.png' },
-                { name: 'Rosy Delight', type: 'seed', chance: 4.5, rarity: 'Divine', rarityClass: 'rarity-Divine', image: 'https://static.wikia.nocookie.net/growagarden/images/5/58/Rosy_Delight_Produce.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/1/11/Rosy_Delight_Seed1.webp' },
-                { name: 'Elephant Ears', type: 'seed', chance: 0.5, rarity: 'Prismatic', rarityClass: 'rarity-Prismatic', image: 'https://static.wikia.nocookie.net/growagarden/images/8/89/Elephant_Ears_Produce.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/6/6a/Elephant_Ears_Seed.png' }
+            'summer_seed_pack': { id: 'summer_seed_pack', name: 'Summer Seed Pack', rarity: 'Event', rarityClass: 'rarity-Event', image: 'https://static.wikia.nocookie.net/growagarden/images/d/db/Summerseedpack.png/revision/latest', type: 'seed', items: [
+                { name: 'Wild Carrot', type: 'seed', chance: 40, rarity: 'Uncommon', rarityClass: 'rarity-Uncommon', image: 'https://static.wikia.nocookie.net/growagarden/images/6/62/Wild_Carrot_Produce.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/a/a1/Wild_Carrot_Seed.png/revision/latest' },
+                { name: 'Pear', type: 'seed', chance: 25, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/a/a1/Regpear.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/d/db/PearSeed.png/revision/latest' },
+                { name: 'Cantaloupe', type: 'seed', chance: 20, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/6/68/Cantaloupe.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/3/33/Cantaloupe_Seed.png/revision/latest' },
+                { name: 'Parasol Flower', type: 'seed', chance: 10, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/b/b2/Parasol_Flower.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/7/72/Parasol_Flower_Seed.png/revision/latest' },
+                { name: 'Rosy Delight', type: 'seed', chance: 4.5, rarity: 'Divine', rarityClass: 'rarity-Divine', image: 'https://static.wikia.nocookie.net/growagarden/images/5/58/Rosy_Delight_Produce.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/1/11/Rosy_Delight_Seed1.webp/revision/latest' },
+                { name: 'Elephant Ears', type: 'seed', chance: 0.5, rarity: 'Prismatic', rarityClass: 'rarity-Prismatic', image: 'https://static.wikia.nocookie.net/growagarden/images/8/89/Elephant_Ears_Produce.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/6/6a/Elephant_Ears_Seed.png/revision/latest' }
             ]},
-            'crafters_seed_pack': { id: 'crafters_seed_pack', name: 'Crafters Seed Pack', rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/3/3d/Crafters_Seed_Pack.png', type: 'seed', items: [
-                { name: 'Crocus', type: 'seed', chance: 40, rarity: 'Uncommon', rarityClass: 'rarity-Uncommon', image: 'https://static.wikia.nocookie.net/growagarden/images/2/2f/Crocus.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/a/ac/CrocusSeed.png' },
-                { name: 'Succulent', type: 'seed', chance: 25, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/4/46/Succulent1.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/6/63/Succulent_seed.png' },
-                { name: 'Violet Corn', type: 'seed', chance: 20, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/e/e5/VioletCornIcon.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/b/b5/Violet_corn_seed.png' },
-                { name: 'Bendboo', type: 'seed', chance: 10, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/6/62/BendbooPlantIcon.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/0/07/BendbooSeedIcon.png' },
-                { name: 'Cocovine', type: 'seed', chance: 4.5, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/c/c1/Cocovine_Crop.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/2/2a/Cocovine_seed1.png' },
-                { name: 'Dragon Pepper', type: 'seed', chance: 0.5, rarity: 'Divine', rarityClass: 'rarity-Divine', image: 'https://static.wikia.nocookie.net/growagarden/images/a/a9/Dragon_pepper.png', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/d/d5/Dragon_pepper_seed.png' }
+            'crafters_seed_pack': { id: 'crafters_seed_pack', name: 'Crafters Seed Pack', rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/3/3d/Crafters_Seed_Pack.png/revision/latest', type: 'seed', items: [
+                { name: 'Crocus', type: 'seed', chance: 40, rarity: 'Uncommon', rarityClass: 'rarity-Uncommon', image: 'https://static.wikia.nocookie.net/growagarden/images/2/2f/Crocus.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/a/ac/CrocusSeed.png/revision/latest' },
+                { name: 'Succulent', type: 'seed', chance: 25, rarity: 'Rare', rarityClass: 'rarity-Rare', image: 'https://static.wikia.nocookie.net/growagarden/images/4/46/Succulent1.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/6/63/Succulent_seed.png/revision/latest' },
+                { name: 'Violet Corn', type: 'seed', chance: 20, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/e/e5/VioletCornIcon.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/b/b5/Violet_corn_seed.png/revision/latest' },
+                { name: 'Bendboo', type: 'seed', chance: 10, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/6/62/BendbooPlantIcon.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/0/07/BendbooSeedIcon.png/revision/latest' },
+                { name: 'Cocovine', type: 'seed', chance: 4.5, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/c/c1/Cocovine_Crop.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/2/2a/Cocovine_seed1.png/revision/latest' },
+                { name: 'Dragon Pepper', type: 'seed', chance: 0.5, rarity: 'Divine', rarityClass: 'rarity-Divine', image: 'https://static.wikia.nocookie.net/growagarden/images/a/a9/Dragon_pepper.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/d/d5/Dragon_pepper_seed.png/revision/latest' }
             ]},
         };
         const allPets = Object.values(allItemData).flatMap(c => c.items).filter(i => i.type === 'animal' || i.type === 'bug');
         const allSeeds = Object.values(allItemData).flatMap(c => c.items).filter(i => i.type.includes('seed'));
         const allTradeableItems = [...allPets, ...allSeeds];
 
+        // --- DOM ELEMENTS ---
         const dom = {
             inventoryGrid: document.getElementById('inventory-grid'),
             resultModal: document.getElementById('result-modal'),
@@ -413,40 +454,55 @@
             infoModalTitle: document.getElementById('info-modal-title'),
             infoModalGrid: document.getElementById('info-modal-grid'),
             closeInfoModalButton: document.getElementById('close-info-modal-button'),
+            backgroundMusic: document.getElementById('background-music'),
         };
 
+        // --- STATE ---
         let state = {
             winningItem: null,
             animationTimeoutId: null,
             isOpening: false,
             collectedItems: [],
-            isMuted: true,
+            isMuted: false, // Звук включен по умолчанию
             currentTrade: { botOffer: [], playerOffer: [] },
             activeInventory: 'pets',
         };
         const MAX_TRADE_SLOTS = 6;
 
-        let sounds = {};
-        function setupSounds() {
-            try {
-                sounds.click = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.005, decay: 0.1, sustain: 0.2, release: 0.1 } }).toDestination();
-                sounds.open = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.1, release: 0.1 } }).toDestination();
-                sounds.close = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0, release: 0.1 } }).toDestination();
-                sounds.clear = new Tone.Synth({ oscillator: { type: 'square' }, envelope: { attack: 0.01, decay: 0.3, sustain: 0, release: 0.2 } }).toDestination();
-                sounds.delete = new Tone.NoiseSynth({ noise: { type: 'pink' }, envelope: { attack: 0.001, decay: 0.1, sustain: 0 } }).toDestination();
-                sounds.delete.volume.value = -10;
-                sounds.win = new Tone.MetalSynth({ frequency: 250, envelope: { attack: 0.001, decay: 0.6, release: 0.2 }, harmonicity: 6.1, modulationIndex: 28, resonance: 3500, octaves: 1.5 }).toDestination();
-                sounds.win.volume.value = -6;
-                sounds.trade = new Tone.Synth({ oscillator: { type: 'sawtooth' }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.2, release: 0.2 } }).toDestination();
-                Tone.Destination.mute = state.isMuted;
-                dom.soundToggle.textContent = state.isMuted ? '🔇' : '🔊';
-            } catch (e) {
-                console.error("Failed to initialize audio:", e);
-                dom.soundToggle.style.display = 'none';
+        // --- SOUNDS ---
+        function playSound(soundId) {
+            if (state.isMuted) return;
+            const sound = document.getElementById(soundId);
+            if (sound) {
+                sound.currentTime = 0;
+                sound.play().catch(e => console.error(`Sound play failed for ${soundId}:`, e));
             }
         }
-        function playSound(sound, note, duration = '8n') { if (!state.isMuted && sounds[sound]) { try { sounds[sound].triggerAttackRelease(note, duration, Tone.now()); } catch (e) {} } }
 
+        function setupAudio() {
+            // Устанавливаем громкость для всех аудиофайлов
+            document.querySelectorAll('audio').forEach(audio => {
+                audio.volume = audio.id === 'background-music' ? 0.3 : 1.0;
+            });
+            // Устанавливаем начальное состояние Mute
+            toggleMute(state.isMuted);
+        }
+
+        function toggleMute(muted) {
+            state.isMuted = muted;
+            dom.soundToggle.textContent = state.isMuted ? '🔇' : '🔊';
+            document.querySelectorAll('audio').forEach(audio => {
+                audio.muted = state.isMuted;
+            });
+             // Особая обработка для фоновой музыки, чтобы она запускалась/останавливалась
+            if (state.isMuted) {
+                dom.backgroundMusic.pause();
+            } else {
+                dom.backgroundMusic.play().catch(e => console.log("User needs to interact with the document first to play music."));
+            }
+        }
+
+        // --- INVENTORY MANAGEMENT ---
         function saveInventory() { localStorage.setItem('gagluck_collectedItems', JSON.stringify(state.collectedItems)); }
         function loadInventory() {
             const saved = localStorage.getItem('gagluck_collectedItems');
@@ -504,8 +560,6 @@
                 const isSeed = item.type.includes('seed');
                 const initialImage = isSeed && item.seedImage ? item.seedImage : item.image;
 
-                // --- FIX ---
-                // Added onerror to handle broken image links.
                 itemEl.innerHTML = `
                     <div class="delete-item-button" data-item-name="${item.name}">×</div>
                     <img src="${initialImage}" alt="${item.name}" class="h-14 object-contain item-image" 
@@ -531,6 +585,7 @@
             state.collectedItems.push({ ...item, uniqueId: `${item.name.replace(/\s+/g, '-')}-${Date.now()}${Math.random()}` });
         }
 
+        // --- OPENING LOGIC ---
         function getRandomItem(items) {
             const totalChance = items.reduce((sum, item) => sum + item.chance, 0);
             let random = Math.random() * totalChance;
@@ -543,11 +598,9 @@
         }
         
         function showFinalResult(item) {
-            playSound('win', 'C5');
+            playSound('sound-win');
             
             const imageToShow = item.type.includes('seed') && item.seedImage ? item.seedImage : item.image;
-            // --- FIX ---
-            // Added onerror to handle broken image links in the result modal.
             dom.resultImageContainer.innerHTML = `<img src="${imageToShow}" alt="${item.name}" class="w-full h-full object-contain" onerror="this.onerror=null;this.src='https://placehold.co/100x100/795548/FFF?text=?';">`;
 
             addItemToInventory(item);
@@ -561,7 +614,7 @@
         }
 
         function closeModal(modalElement) {
-            playSound('close', 'A3');
+            playSound('sound-close');
             modalElement.classList.add('hidden');
             setInventoryState(false);
             if (modalElement === dom.resultModal) {
@@ -571,7 +624,7 @@
         
         function handleSingleOpen(type) {
             if (state.isOpening) return;
-            playSound('click', 'C5');
+            playSound('sound-open');
             setInventoryState(true);
             const currentItemData = allItemData[type];
             state.winningItem = getRandomItem(currentItemData.items);
@@ -580,7 +633,6 @@
             dom.skipButton.classList.remove('hidden');
             dom.resultModal.classList.remove('hidden');
             dom.resultModal.classList.add('flex');
-            playSound('open', 'E5');
             dom.simpleResultView.classList.remove('hidden');
 
             dom.resultImageContainer.innerHTML = `<div class="w-full h-full flex items-center justify-center text-8xl font-bold text-white">?</div>`;
@@ -590,11 +642,12 @@
 
         function skipAnimation() {
             if (!state.isOpening || !state.winningItem) return;
-            playSound('click', 'A4');
+            playSound('sound-click');
             clearTimeout(state.animationTimeoutId);
             showFinalResult(state.winningItem);
         }
         
+        // --- TRADING LOGIC ---
         function getItemValue(item) {
             if (!item) return 0;
             const rarityValue = rarityOrder.indexOf(item.rarity) + 1;
@@ -607,13 +660,11 @@
             itemEl.dataset.uniqueId = uniqueId;
             itemEl.dataset.name = item.name;
             const imageToShow = item.type.includes('seed') && item.seedImage ? item.seedImage : item.image;
-            // --- FIX ---
-            // Added onerror to handle broken image links in trade items.
             itemEl.innerHTML = `<img src="${imageToShow}" alt="${item.name}" class="h-12 object-contain" onerror="this.onerror=null;this.src='https://placehold.co/80x80/d7ccc8/FFF?text=?';"><p class="text-[9px] font-bold leading-tight mt-1">${item.name}</p><p class="text-[8px] ${item.rarityClass}">[${item.rarity}]</p>`;
             return itemEl;
         }
         function startNewTrade() {
-            playSound('trade', 'C4');
+            playSound('sound-click');
             state.currentTrade = { botOffer: [], playerOffer: [] };
             const offerSize = Math.floor(Math.random() * MAX_TRADE_SLOTS) + 1;
             for (let i = 0; i < offerSize; i++) {
@@ -651,9 +702,9 @@
         
         function openItemSelectionModal() {
             if (state.currentTrade.playerOffer.length >= MAX_TRADE_SLOTS) return;
-            playSound('click', 'D4');
+            playSound('sound-click');
             dom.itemSelectionGrid.innerHTML = '';
-            const playerItems = state.collectedItems; // All items are tradeable
+            const playerItems = state.collectedItems;
             const offeredIds = state.currentTrade.playerOffer.map(p => p.uniqueId);
             const availableItems = playerItems.filter(p => !offeredIds.includes(p.uniqueId));
             
@@ -682,7 +733,7 @@
                 const isAlreadyOffered = state.currentTrade.playerOffer.some(p => p.uniqueId === uniqueId);
                 if (!isAlreadyOffered) {
                     state.currentTrade.playerOffer.push(item);
-                    playSound('click', 'C5');
+                    playSound('sound-click');
                     renderTradeUI();
                 }
             }
@@ -691,27 +742,25 @@
             const itemIndex = state.currentTrade.playerOffer.findIndex(p => p.uniqueId === uniqueId);
             if (itemIndex > -1) {
                 state.currentTrade.playerOffer.splice(itemIndex, 1);
-                playSound('click', 'E4');
+                playSound('sound-click');
                 renderTradeUI();
             }
         }
         function evaluateTrade() {
             if (state.currentTrade.playerOffer.length === 0) { 
-                // Using a custom modal/alert in the future would be better than window.alert
                 alert("Вы должны предложить хотя бы один предмет."); 
                 return; 
             }
-            playSound('trade', 'E4');
+            playSound('sound-click');
             const botValue = state.currentTrade.botOffer.reduce((sum, item) => sum + getItemValue(item), 0);
             const playerValue = state.currentTrade.playerOffer.reduce((sum, item) => sum + getItemValue(item), 0);
             const percentage = playerValue > 0 ? ((botValue / playerValue) - 1) * 100 : (botValue > 0 ? 1000 : 0);
             
-            // Bot refusal logic
             const refusalChance = Math.min(90, Math.max(0, percentage / 2));
             const botRefuses = Math.random() * 100 < refusalChance;
 
             if (botRefuses) {
-                playSound('clear', 'C3');
+                playSound('sound-close');
                 dom.tradeResultTitle.textContent = "ТРЕЙД ОТКЛОНЕН!";
                 dom.tradeResultDetails.textContent = "Бот передумал и отменил сделку.";
                 dom.tradeResultPercentage.textContent = "❌";
@@ -743,7 +792,7 @@
             dom.tradeResultModal.classList.add('flex');
         }
         function finalizeTrade() {
-            playSound('win', 'C5');
+            playSound('sound-win');
             const offeredIds = state.currentTrade.playerOffer.map(p => p.uniqueId);
             state.collectedItems = state.collectedItems.filter(item => !offeredIds.includes(item.uniqueId));
             state.currentTrade.botOffer.forEach(item => addItemToInventory(item));
@@ -757,10 +806,11 @@
             dom.closeTradeResultButton.classList.remove('hidden');
         }
         
+        // --- UI & INITIALIZATION ---
         function openInfoModal(itemId) {
             const container = allItemData[itemId];
             if (!container || !container.items) return;
-            playSound('click', 'F4');
+            playSound('sound-click');
             dom.infoModalTitle.textContent = `Содержимое: ${container.name}`;
             dom.infoModalGrid.innerHTML = '';
             const sortedDrops = [...container.items].sort((a,b) => b.chance - a.chance);
@@ -771,8 +821,6 @@
                 const isSeed = drop.type.includes('seed');
                 const initialImage = isSeed && drop.seedImage ? drop.seedImage : drop.image;
 
-                // --- FIX ---
-                // Added onerror to handle broken image links in the info modal.
                 itemEl.innerHTML = `
                     <img src="${initialImage}" alt="${drop.name}" class="h-14 object-contain item-image" 
                          ${isSeed && drop.seedImage ? `data-seed-image="${drop.seedImage}" data-fruit-image="${drop.image}"` : ''}
@@ -814,8 +862,6 @@
                 mainBody.style.cursor = 'pointer';
                 mainBody.addEventListener('click', () => handleSingleOpen(container.id));
                 
-                // --- FIX ---
-                // Added onerror to handle broken image links on the main grid.
                 mainBody.innerHTML = `
                     <img src="${container.image}" alt="${container.name}" class="h-16 object-contain my-1" onerror="this.onerror=null;this.src='https://placehold.co/100x100/a1887f/FFF?text=?';">
                     <div class="flex-grow flex flex-col justify-center overflow-hidden w-full px-1">
@@ -838,13 +884,18 @@
             });
         }
         function setupEventListeners() {
-            document.addEventListener('click', () => { if (Tone.context.state !== 'running') { try { Tone.start(); } catch(e) {} } }, { once: true });
+            // Единоразовый обработчик для запуска музыки при взаимодействии
+            document.body.addEventListener('click', () => {
+                if (!state.isMuted && dom.backgroundMusic.paused) {
+                    dom.backgroundMusic.play().catch(e => {});
+                }
+            }, { once: true });
             
             dom.bulkOpenButton.addEventListener('click', () => {
+                playSound('sound-click');
                 const type = dom.bulkOpenSelect.value;
                 const quantity = parseInt(dom.bulkQuantityInput.value, 10);
                 if (isNaN(quantity) || quantity <= 0) { alert('Введите корректное количество.'); return; }
-                playSound('click', 'C4');
                 setInventoryState(true);
                 const itemContainer = allItemData[type];
                 if (!itemContainer) return;
@@ -854,7 +905,10 @@
                 }
                 saveInventory();
                 renderCollectedInventories();
-                setTimeout(() => { setInventoryState(false); playSound('win', 'C5'); }, 200);
+                setTimeout(() => { 
+                    setInventoryState(false); 
+                    playSound('sound-win');
+                }, 200);
             });
             
             dom.skipButton.addEventListener('click', skipAnimation);
@@ -863,18 +917,18 @@
 
             dom.clearInventoryButton.addEventListener('click', () => {
                 if (confirm('Вы уверены, что хотите очистить весь инвентарь? Это действие необратимо.')) {
-                    playSound('clear', 'C3');
+                    playSound('sound-delete');
                     state.collectedItems = [];
                     saveInventory();
                     renderCollectedInventories();
                 }
             });
 
-            function handleDelete(e, grid) {
+            function handleDelete(e) {
                  if (e.target.classList.contains('delete-item-button')) {
                     const itemName = e.target.dataset.itemName;
                     if (confirm(`Удалить один ${itemName}?`)) {
-                        playSound('delete', 'C2');
+                        playSound('sound-delete');
                         const itemIndex = state.collectedItems.findIndex(i => i.name === itemName);
                         if (itemIndex > -1) state.collectedItems.splice(itemIndex, 1);
                         saveInventory();
@@ -882,23 +936,20 @@
                     }
                 }
             }
-            dom.collectedPetsGrid.addEventListener('click', (e) => handleDelete(e, dom.collectedPetsGrid));
-            dom.collectedSeedsGrid.addEventListener('click', (e) => handleDelete(e, dom.collectedSeedsGrid));
-
+            dom.collectedPetsGrid.addEventListener('click', handleDelete);
+            dom.collectedSeedsGrid.addEventListener('click', handleDelete);
 
             dom.soundToggle.addEventListener('click', () => {
-                state.isMuted = !state.isMuted;
-                Tone.Destination.mute = state.isMuted;
-                dom.soundToggle.textContent = state.isMuted ? '🔇' : '🔊';
+                toggleMute(!state.isMuted);
             });
             
-            dom.openTradeSimButton.addEventListener('click', () => { playSound('open', 'C4'); dom.tradeModal.classList.remove('hidden'); dom.tradeModal.classList.add('flex'); startNewTrade(); });
+            dom.openTradeSimButton.addEventListener('click', () => { playSound('sound-click'); dom.tradeModal.classList.remove('hidden'); dom.tradeModal.classList.add('flex'); startNewTrade(); });
             dom.closeTradeModalButton.addEventListener('click', () => closeModal(dom.tradeModal));
             dom.declineTradeButton.addEventListener('click', startNewTrade);
             dom.acceptTradeButton.addEventListener('click', evaluateTrade);
-            dom.backToTradeButton.addEventListener('click', () => { dom.tradeResultModal.classList.add('hidden'); dom.tradeResultModal.classList.remove('flex'); });
+            dom.backToTradeButton.addEventListener('click', () => { playSound('sound-click'); dom.tradeResultModal.classList.add('hidden'); dom.tradeResultModal.classList.remove('flex'); });
             dom.confirmTradeButton.addEventListener('click', finalizeTrade);
-            dom.closeTradeResultButton.addEventListener('click', () => { dom.tradeResultModal.classList.add('hidden'); dom.tradeResultModal.classList.remove('flex'); startNewTrade(); });
+            dom.closeTradeResultButton.addEventListener('click', () => { playSound('sound-click'); dom.tradeResultModal.classList.add('hidden'); dom.tradeResultModal.classList.remove('flex'); startNewTrade(); });
             
             dom.closeItemSelectionModalButton.addEventListener('click', () => closeModal(dom.itemSelectionModal));
             dom.itemSelectionModal.addEventListener('click', (e) => { if (e.target === dom.itemSelectionModal) closeModal(dom.itemSelectionModal); });
@@ -906,27 +957,27 @@
             dom.infoModal.addEventListener('click', (e) => { if (e.target === dom.infoModal) closeModal(dom.infoModal); });
 
             dom.showPetsBtn.addEventListener('click', () => {
+                playSound('sound-click');
                 state.activeInventory = 'pets';
                 dom.collectedPetsGrid.classList.remove('hidden');
                 dom.collectedSeedsGrid.classList.add('hidden');
                 dom.showPetsBtn.classList.add('active');
                 dom.showSeedsBtn.classList.remove('active');
-                playSound('click', 'C4');
             });
             dom.showSeedsBtn.addEventListener('click', () => {
+                playSound('sound-click');
                 state.activeInventory = 'seeds';
                 dom.collectedPetsGrid.classList.add('hidden');
                 dom.collectedSeedsGrid.classList.remove('hidden');
                 dom.showPetsBtn.classList.remove('active');
                 dom.showSeedsBtn.classList.add('active');
-                playSound('click', 'C4');
             });
         }
         
         document.addEventListener('DOMContentLoaded', () => {
             loadInventory();
             populateInitialUI();
-            setupSounds();
+            setupAudio();
             setupEventListeners();
         });
     </script>
