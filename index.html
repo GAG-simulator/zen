@@ -76,7 +76,7 @@
         .btn-tab.active { background-color: var(--item-border); color: white; border-color: #5d4037; }
 
 
-        .modal-backdrop { background-color: rgba(0, 0, 0, 0.75); z-index: 1000; }
+        .modal-backdrop { background-color: rgba(0, 0, 0, 0.75); }
         
         @keyframes rainbow-animation { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
         @keyframes divine-animation { 0% { color: #ff9900; text-shadow: 0 0 8px #ff9900, 0 0 16px #fff; } 50% { color: #ffffff; text-shadow: 0 0 12px #fff, 0 0 20px #ff9900; } 100% { color: #ff9900; text-shadow: 0 0 8px #ff9900, 0 0 16px #fff; } }
@@ -150,6 +150,20 @@
         .trade-item.placeholder { display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: var(--item-border); background-color: rgba(0,0,0,0.1); transition: background-color 0.2s; }
         .trade-item.placeholder:hover { background-color: rgba(0,0,0,0.2); }
         
+        /* Стили для быстрого удаления */
+        #quick-delete-button.active {
+            background-color: #ef5350;
+            border-color: #c62828;
+            box-shadow: 0 0 10px #ff7961;
+        }
+        .quick-delete-mode .inventory-item {
+            cursor: crosshair !important;
+            border: 2px solid #f44336;
+        }
+        .quick-delete-mode .inventory-item:hover {
+            border-color: #ffcdd2;
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body class="p-2 md:p-4">
@@ -200,8 +214,9 @@
                 <div id="collected-seeds-grid" class="hidden grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 min-h-[100px]"></div>
             </div>
 
-            <div class="text-center mt-4">
+            <div class="text-center mt-4 flex justify-center items-center gap-4">
                 <button id="clear-inventory-button" class="btn btn-red">Очистить инвентарь</button>
+                <button id="quick-delete-button" class="btn btn-red w-12 h-12 !p-0 flex items-center justify-center text-2xl">🗑️</button>
             </div>
         </div>
     </div>
@@ -222,6 +237,16 @@
         </div>
     </div>
     
+    <div id="bulk-result-modal" class="fixed inset-0 flex items-center justify-center p-4 modal-backdrop hidden" style="z-index: 1010;">
+        <div class="modal-content w-full max-w-2xl p-4 rounded-lg text-center relative">
+            <button id="close-bulk-result-modal-button" class="absolute top-2 right-2 btn btn-blue !p-1 w-8 h-8 flex items-center justify-center text-lg font-bold !border-0">×</button>
+            <h2 id="bulk-result-modal-title" class="text-lg font-bold mb-4">Результаты открытия</h2>
+            <div id="bulk-result-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 max-h-80 overflow-y-auto p-2 bg-black bg-opacity-25 rounded-lg">
+                <!-- Результаты будут добавлены сюда -->
+            </div>
+        </div>
+    </div>
+
     <div id="trade-modal" class="fixed inset-0 flex-col items-center justify-center p-2 modal-backdrop hidden" style="z-index: 1010;">
         <div class="modal-content w-full max-w-6xl p-2 md:p-4 rounded-lg text-center relative">
              <button id="close-trade-modal-button" class="absolute top-2 right-2 btn btn-blue !p-2 w-12 h-12 flex items-center justify-center text-2xl font-bold !border-0 z-10">×</button>
@@ -272,6 +297,24 @@
             <button id="close-info-modal-button" class="absolute top-2 right-2 btn btn-blue !p-1 w-8 h-8 flex items-center justify-center text-lg font-bold !border-0">×</button>
             <h2 id="info-modal-title" class="text-lg font-bold mb-4">Возможные награды</h2>
             <div id="info-modal-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 max-h-80 overflow-y-auto p-2 bg-black bg-opacity-25 rounded-lg"></div>
+        </div>
+    </div>
+
+    <!-- Новые модальные окна для alert и confirm -->
+    <div id="alert-modal" class="fixed inset-0 flex items-center justify-center p-4 modal-backdrop hidden" style="z-index: 1050;">
+        <div class="modal-content w-full max-w-sm p-4 rounded-lg text-center relative">
+            <p id="alert-modal-text" class="text-lg mb-4"></p>
+            <button id="alert-modal-ok" class="btn btn-blue">OK</button>
+        </div>
+    </div>
+
+    <div id="confirm-modal" class="fixed inset-0 flex items-center justify-center p-4 modal-backdrop hidden" style="z-index: 1050;">
+        <div class="modal-content w-full max-w-sm p-4 rounded-lg text-center relative">
+            <h3 id="confirm-modal-title" class="text-lg font-bold mb-4"></h3>
+            <div class="flex justify-center gap-4">
+                <button id="confirm-modal-cancel" class="btn btn-red">Отмена</button>
+                <button id="confirm-modal-ok" class="btn btn-green">OK</button>
+            </div>
         </div>
     </div>
 
@@ -408,6 +451,29 @@
                 { name: 'Dragon Pepper', type: 'seed', chance: 0.5, rarity: 'Divine', rarityClass: 'rarity-Divine', image: 'https://static.wikia.nocookie.net/growagarden/images/a/a9/Dragon_pepper.png/revision/latest', seedImage: 'https://static.wikia.nocookie.net/growagarden/images/d/d5/Dragon_pepper_seed.png/revision/latest' }
             ]},
         };
+
+        // --- FIX IMAGE URLS ---
+        function cleanImageUrl(url) {
+            if (!url || typeof url !== 'string') return url;
+            const revisionIndex = url.indexOf('/revision/');
+            if (revisionIndex !== -1) {
+                return url.substring(0, revisionIndex);
+            }
+            return url;
+        }
+
+        Object.values(allItemData).forEach(container => {
+            container.image = cleanImageUrl(container.image);
+            if (container.items) {
+                container.items.forEach(item => {
+                    item.image = cleanImageUrl(item.image);
+                    if (item.seedImage) {
+                        item.seedImage = cleanImageUrl(item.seedImage);
+                    }
+                });
+            }
+        });
+
         const allPets = Object.values(allItemData).flatMap(c => c.items).filter(i => i.type === 'animal' || i.type === 'bug');
         const allSeeds = Object.values(allItemData).flatMap(c => c.items).filter(i => i.type.includes('seed'));
         const allTradeableItems = [...allPets, ...allSeeds];
@@ -455,6 +521,19 @@
             infoModalGrid: document.getElementById('info-modal-grid'),
             closeInfoModalButton: document.getElementById('close-info-modal-button'),
             backgroundMusic: document.getElementById('background-music'),
+            quickDeleteButton: document.getElementById('quick-delete-button'),
+            bulkResultModal: document.getElementById('bulk-result-modal'),
+            bulkResultModalTitle: document.getElementById('bulk-result-modal-title'),
+            bulkResultGrid: document.getElementById('bulk-result-grid'),
+            closeBulkResultModalButton: document.getElementById('close-bulk-result-modal-button'),
+            // Новые элементы для кастомных модальных окон
+            alertModal: document.getElementById('alert-modal'),
+            alertModalText: document.getElementById('alert-modal-text'),
+            alertModalOk: document.getElementById('alert-modal-ok'),
+            confirmModal: document.getElementById('confirm-modal'),
+            confirmModalTitle: document.getElementById('confirm-modal-title'),
+            confirmModalCancel: document.getElementById('confirm-modal-cancel'),
+            confirmModalOk: document.getElementById('confirm-modal-ok'),
         };
 
         // --- STATE ---
@@ -463,11 +542,35 @@
             animationTimeoutId: null,
             isOpening: false,
             collectedItems: [],
-            isMuted: false, // Звук включен по умолчанию
+            isMuted: false, 
             currentTrade: { botOffer: [], playerOffer: [] },
             activeInventory: 'pets',
+            isQuickDeleteMode: false, 
+            confirmCallback: null,
         };
         const MAX_TRADE_SLOTS = 6;
+
+        // --- CUSTOM MODAL LOGIC ---
+        function showAlert(text) {
+            playSound('sound-click');
+            dom.alertModalText.textContent = text;
+            dom.alertModal.classList.remove('hidden');
+            dom.alertModal.classList.add('flex');
+        }
+
+        function showConfirm(title, onConfirm) {
+            playSound('sound-click');
+            dom.confirmModalTitle.textContent = title;
+            state.confirmCallback = onConfirm;
+            dom.confirmModal.classList.remove('hidden');
+            dom.confirmModal.classList.add('flex');
+        }
+
+        function hideConfirm() {
+            dom.confirmModal.classList.add('hidden');
+            dom.confirmModal.classList.remove('flex');
+            state.confirmCallback = null;
+        }
 
         // --- SOUNDS ---
         function playSound(soundId) {
@@ -480,11 +583,9 @@
         }
 
         function setupAudio() {
-            // Устанавливаем громкость для всех аудиофайлов
             document.querySelectorAll('audio').forEach(audio => {
                 audio.volume = audio.id === 'background-music' ? 0.3 : 1.0;
             });
-            // Устанавливаем начальное состояние Mute
             toggleMute(state.isMuted);
         }
 
@@ -494,7 +595,6 @@
             document.querySelectorAll('audio').forEach(audio => {
                 audio.muted = state.isMuted;
             });
-             // Особая обработка для фоновой музыки, чтобы она запускалась/останавливалась
             if (state.isMuted) {
                 dom.backgroundMusic.pause();
             } else {
@@ -556,6 +656,7 @@
             Object.values(itemCounts).forEach(item => {
                 const itemEl = document.createElement('div');
                 itemEl.className = 'inventory-item p-1 rounded-md flex flex-col items-center justify-between text-center h-28 bg-black bg-opacity-20';
+                itemEl.dataset.itemName = item.name;
                 
                 const isSeed = item.type.includes('seed');
                 const initialImage = isSeed && item.seedImage ? item.seedImage : item.image;
@@ -616,6 +717,7 @@
         function closeModal(modalElement) {
             playSound('sound-close');
             modalElement.classList.add('hidden');
+            modalElement.classList.remove('flex');
             setInventoryState(false);
             if (modalElement === dom.resultModal) {
                  clearTimeout(state.animationTimeoutId);
@@ -646,7 +748,38 @@
             clearTimeout(state.animationTimeoutId);
             showFinalResult(state.winningItem);
         }
-        
+
+        function showBulkResults(results, containerName, quantity) {
+            dom.bulkResultModalTitle.textContent = `Результаты открытия ${quantity}x ${containerName}`;
+            dom.bulkResultGrid.innerHTML = '';
+            
+            const sortedResults = Object.values(results).sort((a,b) => rarityOrder.indexOf(b.rarity) - rarityOrder.indexOf(a.rarity));
+
+            if (sortedResults.length === 0) {
+                dom.bulkResultGrid.innerHTML = `<p class="col-span-full text-center text-stone-400 text-sm">Ничего не выпало.</p>`;
+            } else {
+                sortedResults.forEach(item => {
+                    const itemEl = document.createElement('div');
+                    itemEl.className = 'inventory-item p-1 rounded-md flex flex-col items-center justify-between text-center h-28 bg-black bg-opacity-20';
+                    
+                    const isSeed = item.type.includes('seed');
+                    const initialImage = isSeed && item.seedImage ? item.seedImage : item.image;
+
+                    itemEl.innerHTML = `
+                        <img src="${initialImage}" alt="${item.name}" class="h-14 object-contain item-image" 
+                             onerror="this.onerror=null;this.src='https://placehold.co/80x80/a1887f/FFF?text=?';">
+                        <p class="text-[10px] font-bold leading-tight">${item.name}</p>
+                        <p class="text-[9px] ${item.rarityClass}">[${item.rarity}]</p>
+                        <div class="item-count font-bold text-lg" style="text-shadow: 1px 1px 2px #000;">x${item.count}</div>
+                    `;
+                    dom.bulkResultGrid.appendChild(itemEl);
+                });
+            }
+            
+            dom.bulkResultModal.classList.remove('hidden');
+            dom.bulkResultModal.classList.add('flex');
+        }
+
         // --- TRADING LOGIC ---
         function getItemValue(item) {
             if (!item) return 0;
@@ -748,7 +881,7 @@
         }
         function evaluateTrade() {
             if (state.currentTrade.playerOffer.length === 0) { 
-                alert("Вы должны предложить хотя бы один предмет."); 
+                showAlert("Вы должны предложить хотя бы один предмет."); 
                 return; 
             }
             playSound('sound-click');
@@ -884,7 +1017,6 @@
             });
         }
         function setupEventListeners() {
-            // Единоразовый обработчик для запуска музыки при взаимодействии
             document.body.addEventListener('click', () => {
                 if (!state.isMuted && dom.backgroundMusic.paused) {
                     dom.backgroundMusic.play().catch(e => {});
@@ -895,16 +1027,25 @@
                 playSound('sound-click');
                 const type = dom.bulkOpenSelect.value;
                 const quantity = parseInt(dom.bulkQuantityInput.value, 10);
-                if (isNaN(quantity) || quantity <= 0) { alert('Введите корректное количество.'); return; }
+                if (isNaN(quantity) || quantity <= 0) { showAlert('Введите корректное количество.'); return; }
                 setInventoryState(true);
                 const itemContainer = allItemData[type];
                 if (!itemContainer) return;
+
+                const bulkResults = {};
+
                 for (let i = 0; i < quantity; i++) {
                     const wonItem = getRandomItem(itemContainer.items);
                     addItemToInventory(wonItem);
+                    if (!bulkResults[wonItem.name]) {
+                        bulkResults[wonItem.name] = { ...wonItem, count: 0 };
+                    }
+                    bulkResults[wonItem.name].count++;
                 }
                 saveInventory();
                 renderCollectedInventories();
+                showBulkResults(bulkResults, itemContainer.name, quantity);
+                
                 setTimeout(() => { 
                     setInventoryState(false); 
                     playSound('sound-win');
@@ -914,34 +1055,64 @@
             dom.skipButton.addEventListener('click', skipAnimation);
             dom.closeModalButton.addEventListener('click', () => closeModal(dom.resultModal));
             dom.resultModal.addEventListener('click', (e) => { if (e.target === dom.resultModal) closeModal(dom.resultModal); });
+            
+            dom.closeBulkResultModalButton.addEventListener('click', () => closeModal(dom.bulkResultModal));
+            dom.bulkResultModal.addEventListener('click', (e) => { if (e.target === dom.bulkResultModal) closeModal(dom.bulkResultModal); });
+
 
             dom.clearInventoryButton.addEventListener('click', () => {
-                if (confirm('Вы уверены, что хотите очистить весь инвентарь? Это действие необратимо.')) {
+                showConfirm('Вы уверены, что хотите очистить весь инвентарь? Это действие необратимо.', () => {
                     playSound('sound-delete');
                     state.collectedItems = [];
                     saveInventory();
                     renderCollectedInventories();
-                }
+                });
             });
 
-            function handleDelete(e) {
-                 if (e.target.classList.contains('delete-item-button')) {
-                    const itemName = e.target.dataset.itemName;
-                    if (confirm(`Удалить один ${itemName}?`)) {
+            function handleInventoryClick(e) {
+                const itemElement = e.target.closest('.inventory-item');
+                if (!itemElement) return;
+
+                const itemName = itemElement.dataset.itemName;
+                if (!itemName) return;
+
+                if (state.isQuickDeleteMode) {
+                    const itemCount = state.collectedItems.filter(i => i.name === itemName).length;
+                    showConfirm(`Вы уверены, что хотите удалить ВСЕХ "${itemName}" (${itemCount} шт.)?`, () => {
                         playSound('sound-delete');
-                        const itemIndex = state.collectedItems.findIndex(i => i.name === itemName);
-                        if (itemIndex > -1) state.collectedItems.splice(itemIndex, 1);
+                        state.collectedItems = state.collectedItems.filter(i => i.name !== itemName);
                         saveInventory();
                         renderCollectedInventories();
+                        
+                        state.isQuickDeleteMode = false;
+                        dom.quickDeleteButton.classList.remove('active');
+                        dom.quickDeleteButton.textContent = '🗑️';
+                        dom.collectedPetsGrid.parentElement.classList.remove('quick-delete-mode');
+                    });
+                } else {
+                    if (e.target.classList.contains('delete-item-button')) {
+                        showConfirm(`Удалить один предмет "${itemName}"?`, () => {
+                            playSound('sound-delete');
+                            const itemIndex = state.collectedItems.findIndex(i => i.name === itemName);
+                            if (itemIndex > -1) state.collectedItems.splice(itemIndex, 1);
+                            saveInventory();
+                            renderCollectedInventories();
+                        });
                     }
                 }
             }
-            dom.collectedPetsGrid.addEventListener('click', handleDelete);
-            dom.collectedSeedsGrid.addEventListener('click', handleDelete);
+            dom.collectedPetsGrid.addEventListener('click', handleInventoryClick);
+            dom.collectedSeedsGrid.addEventListener('click', handleInventoryClick);
 
-            dom.soundToggle.addEventListener('click', () => {
-                toggleMute(!state.isMuted);
+            dom.quickDeleteButton.addEventListener('click', () => {
+                playSound('sound-click');
+                state.isQuickDeleteMode = !state.isQuickDeleteMode;
+                dom.quickDeleteButton.classList.toggle('active', state.isQuickDeleteMode);
+                dom.quickDeleteButton.textContent = state.isQuickDeleteMode ? '✖️' : '🗑️';
+                dom.collectedPetsGrid.parentElement.classList.toggle('quick-delete-mode', state.isQuickDeleteMode);
             });
+
+            dom.soundToggle.addEventListener('click', () => toggleMute(!state.isMuted) );
             
             dom.openTradeSimButton.addEventListener('click', () => { playSound('sound-click'); dom.tradeModal.classList.remove('hidden'); dom.tradeModal.classList.add('flex'); startNewTrade(); });
             dom.closeTradeModalButton.addEventListener('click', () => closeModal(dom.tradeModal));
@@ -955,6 +1126,17 @@
             dom.itemSelectionModal.addEventListener('click', (e) => { if (e.target === dom.itemSelectionModal) closeModal(dom.itemSelectionModal); });
             dom.closeInfoModalButton.addEventListener('click', () => closeModal(dom.infoModal));
             dom.infoModal.addEventListener('click', (e) => { if (e.target === dom.infoModal) closeModal(dom.infoModal); });
+
+            // Event listeners for new modals
+            dom.alertModalOk.addEventListener('click', () => closeModal(dom.alertModal));
+            dom.confirmModalCancel.addEventListener('click', () => { playSound('sound-close'); hideConfirm(); });
+            dom.confirmModalOk.addEventListener('click', () => {
+                playSound('sound-click');
+                if (typeof state.confirmCallback === 'function') {
+                    state.confirmCallback();
+                }
+                hideConfirm();
+            });
 
             dom.showPetsBtn.addEventListener('click', () => {
                 playSound('sound-click');
