@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>GagSimulator🤔</title>
+    <title>GagSimulator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -141,7 +141,7 @@
             z-index: 10;
         }
 
-        #trade-modal .modal-content { background-color: #5d4037; }
+        #trade-modal .modal-content, #trade-eval-modal .modal-content { background-color: #5d4037; }
         .trade-grid { display: grid; grid-template-columns: 1fr; gap: 0.5rem; }
         @media (min-width: 768px) { .trade-grid { grid-template-columns: 1fr auto 1fr; align-items: center; gap: 1rem; } }
         .trade-area { background-color: var(--item-bg-dark); border: 2px solid var(--border-dark); border-radius: 8px; padding: 0.5rem; min-height: 180px; }
@@ -198,8 +198,9 @@
 
             <div class="inventory-container p-2 md:p-4 rounded-lg mb-4">
                 <h2 class="text-md md:text-xl font-bold mb-2 text-center border-b-2 border-b-stone-800 pb-1">ТРЕЙДЫ</h2>
-                 <div class="text-center">
-                    <button id="open-trade-sim-button" class="btn btn-blue">Симулятор Трейдов</button>
+                 <div class="text-center flex flex-col sm:flex-row justify-center items-center gap-2">
+                    <button id="open-trade-sim-button" class="btn btn-blue w-full sm:w-auto">Трейд с ботом</button>
+                    <button id="open-trade-eval-button" class="btn btn-green w-full sm:w-auto">Оценка трейда</button>
                 </div>
             </div>
 
@@ -283,11 +284,40 @@
             </div>
         </div>
     </div>
+    
+    <!-- Trade Evaluation Modal -->
+    <div id="trade-eval-modal" class="fixed inset-0 flex-col items-center justify-center p-2 modal-backdrop hidden" style="z-index: 1010;">
+        <div class="modal-content w-full max-w-6xl p-2 md:p-4 rounded-lg text-center relative">
+             <button id="close-trade-eval-modal-button" class="absolute top-2 right-2 btn btn-blue !p-2 w-12 h-12 flex items-center justify-center text-2xl font-bold !border-0 z-10">×</button>
+            <h2 class="text-lg md:text-xl font-bold mb-2">ОЦЕНКА ТРЕЙДА</h2>
+            
+            <div class="trade-grid mb-2">
+                <div class="trade-area">
+                    <h3 class="text-sm font-bold mb-1 border-b border-b-stone-600 pb-1">ВАШЕ ПРЕДЛОЖЕНИЕ</h3>
+                    <div id="eval-your-offer-grid" class="trade-item-grid"></div>
+                </div>
+                <div class="flex items-center justify-center text-2xl md:text-4xl font-bold text-stone-400 my-1 md:my-0">&#x21C4;</div>
+                <div class="trade-area">
+                    <h3 class="text-sm font-bold mb-1 border-b border-b-stone-600 pb-1">ПРЕДЛОЖЕНИЕ ОППОНЕНТА</h3>
+                    <div id="eval-opponent-offer-grid" class="trade-item-grid"></div>
+                </div>
+            </div>
+
+            <div class="bg-black bg-opacity-25 rounded-lg p-2 mt-2">
+                <h3 class="text-sm font-bold">ВАША ВЫГОДА:</h3>
+                <p id="trade-eval-percentage" class="text-3xl font-bold text-white">0%</p>
+            </div>
+             <div class="text-center mt-2">
+                <button id="reset-trade-eval-button" class="btn btn-red">Сбросить</button>
+            </div>
+        </div>
+    </div>
 
     <div id="item-selection-modal" class="fixed inset-0 flex items-center justify-center p-4 modal-backdrop hidden" style="z-index: 1020;">
         <div class="modal-content w-full max-w-4xl p-4 rounded-lg text-center relative">
             <button id="close-item-selection-modal-button" class="absolute top-2 right-2 btn btn-blue !p-1 w-8 h-8 flex items-center justify-center text-lg font-bold !border-0">×</button>
-            <h2 class="text-lg font-bold mb-4">Выберите предмет для обмена</h2>
+            <h2 id="item-selection-title" class="text-lg font-bold mb-4">Выберите предмет</h2>
+            <input type="text" id="item-selection-search" class="w-full rounded-md bg-stone-300 text-black placeholder-stone-500 text-center p-2 border-2 border-stone-600 mb-4" placeholder="Поиск по названию...">
             <div id="item-selection-grid" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 max-h-80 overflow-y-auto p-2 bg-black bg-opacity-25 rounded-lg"></div>
         </div>
     </div>
@@ -392,7 +422,7 @@
                 { name: 'Triceratops', type: 'animal', chance: 32.5, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/a/a1/Triceratops.png/revision/latest' },
                 { name: 'Stegosaurus', type: 'animal', chance: 28, rarity: 'Legendary', rarityClass: 'rarity-Legendary', image: 'https://static.wikia.nocookie.net/growagarden/images/c/cd/Stegosaurus.png/revision/latest' },
                 { name: 'Pterodactyl', type: 'animal', chance: 3, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/4/49/Pterodactyl.png/revision/latest' },
-                { name: 'Brontosaurus', type: 'animal', chance: 1, rarity: 'Prismatic', rarityClass: 'rarity-Prismatic', image: 'https://static.wikia.nocookie.net/growagarden/images/4/47/Brontosaurus.png/revision/latest' },
+                { name: 'Brontosaurus', type: 'animal', chance: 1, rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/4/47/Brontosaurus.png/revision/latest' },
                 { name: 'T-Rex', type: 'animal', chance: 0.5, rarity: 'Divine', rarityClass: 'rarity-Divine', image: 'https://static.wikia.nocookie.net/growagarden/images/f/f8/T-Rex.png/revision/latest' }
             ]},
             'anti_bee_egg': { id: 'anti_bee_egg', name: 'Anti Bee Egg', rarity: 'Mythical', rarityClass: 'rarity-Mythical', image: 'https://static.wikia.nocookie.net/growagarden/images/e/e2/AntiBeeEgg.png/revision/latest', type: 'egg', items: [
@@ -526,7 +556,6 @@
             bulkResultModalTitle: document.getElementById('bulk-result-modal-title'),
             bulkResultGrid: document.getElementById('bulk-result-grid'),
             closeBulkResultModalButton: document.getElementById('close-bulk-result-modal-button'),
-            // Новые элементы для кастомных модальных окон
             alertModal: document.getElementById('alert-modal'),
             alertModalText: document.getElementById('alert-modal-text'),
             alertModalOk: document.getElementById('alert-modal-ok'),
@@ -534,6 +563,16 @@
             confirmModalTitle: document.getElementById('confirm-modal-title'),
             confirmModalCancel: document.getElementById('confirm-modal-cancel'),
             confirmModalOk: document.getElementById('confirm-modal-ok'),
+            // Trade Evaluation Elements
+            openTradeEvalButton: document.getElementById('open-trade-eval-button'),
+            tradeEvalModal: document.getElementById('trade-eval-modal'),
+            closeTradeEvalModalButton: document.getElementById('close-trade-eval-modal-button'),
+            evalYourOfferGrid: document.getElementById('eval-your-offer-grid'),
+            evalOpponentOfferGrid: document.getElementById('eval-opponent-offer-grid'),
+            tradeEvalPercentage: document.getElementById('trade-eval-percentage'),
+            resetTradeEvalButton: document.getElementById('reset-trade-eval-button'),
+            itemSelectionSearch: document.getElementById('item-selection-search'),
+            itemSelectionTitle: document.getElementById('item-selection-title'),
         };
 
         // --- STATE ---
@@ -544,9 +583,11 @@
             collectedItems: [],
             isMuted: false, 
             currentTrade: { botOffer: [], playerOffer: [] },
+            currentEval: { yourOffer: [], opponentOffer: [] },
             activeInventory: 'pets',
             isQuickDeleteMode: false, 
             confirmCallback: null,
+            itemSelectionCallback: null,
         };
         const MAX_TRADE_SLOTS = 6;
 
@@ -789,7 +830,7 @@
         }
         function createTradeItemElement(item, uniqueId) {
             const itemEl = document.createElement('div');
-            itemEl.className = 'trade-item inventory-item p-1 rounded-md flex flex-col items-center justify-center text-center';
+            itemEl.className = 'trade-item inventory-item p-1 rounded-md flex flex-col items-center justify-center text-center relative';
             itemEl.dataset.uniqueId = uniqueId;
             itemEl.dataset.name = item.name;
             const imageToShow = item.type.includes('seed') && item.seedImage ? item.seedImage : item.image;
@@ -826,37 +867,86 @@
                     placeholder.className = 'trade-item placeholder';
                     if (isPlayerGrid) {
                         placeholder.textContent = '+';
-                        placeholder.addEventListener('click', openItemSelectionModal);
+                        placeholder.addEventListener('click', () => {
+                            const offeredIds = state.currentTrade.playerOffer.map(p => p.uniqueId);
+                            const availableItems = state.collectedItems.filter(p => !offeredIds.includes(p.uniqueId));
+                            
+                            openItemSelectionModal({
+                                title: 'Выберите предмет для обмена',
+                                itemList: availableItems,
+                                allowDuplicates: false,
+                                onSelect: (selectedItem) => {
+                                    moveItemToOffer(selectedItem.uniqueId);
+                                }
+                            });
+                        });
                     }
                     grid.appendChild(placeholder);
                 }
             });
         }
         
-        function openItemSelectionModal() {
-            if (state.currentTrade.playerOffer.length >= MAX_TRADE_SLOTS) return;
+        function openItemSelectionModal({ title, itemList, allowDuplicates, onSelect }) {
             playSound('sound-click');
-            dom.itemSelectionGrid.innerHTML = '';
-            const playerItems = state.collectedItems;
-            const offeredIds = state.currentTrade.playerOffer.map(p => p.uniqueId);
-            const availableItems = playerItems.filter(p => !offeredIds.includes(p.uniqueId));
-            
-            if (availableItems.length === 0) {
-                dom.itemSelectionGrid.innerHTML = '<p class="col-span-full text-center text-stone-400 text-sm">Нет доступных предметов для обмена.</p>';
-            } else {
-                availableItems.forEach(item => {
-                    const itemEl = createTradeItemElement(item, item.uniqueId);
+            dom.itemSelectionTitle.textContent = title;
+            dom.itemSelectionSearch.value = ''; // Reset search
+            state.itemSelectionCallback = onSelect;
+
+            const renderGrid = (searchTerm = '') => {
+                dom.itemSelectionGrid.innerHTML = '';
+                
+                let processedList;
+
+                if (allowDuplicates) {
+                    processedList = itemList.map(item => ({ ...item, count: 1 }));
+                } else {
+                    const itemCounts = {};
+                    itemList.forEach(item => {
+                        if (!itemCounts[item.name]) {
+                            itemCounts[item.name] = { ...item, count: 0, uniqueIds: [] };
+                        }
+                        itemCounts[item.name].count++;
+                        itemCounts[item.name].uniqueIds.push(item.uniqueId);
+                    });
+                    processedList = Object.values(itemCounts);
+                }
+                
+                const sortedList = processedList.sort((a, b) => 
+                    rarityOrder.indexOf(b.rarity) - rarityOrder.indexOf(a.rarity) || a.name.localeCompare(b.name)
+                );
+
+                const filteredList = searchTerm 
+                    ? sortedList.filter(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()))
+                    : sortedList;
+                
+                if (filteredList.length === 0) {
+                    dom.itemSelectionGrid.innerHTML = '<p class="col-span-full text-center text-stone-400 text-sm">Ничего не найдено.</p>';
+                    return;
+                }
+
+                filteredList.forEach(item => {
+                    const uniqueId = !allowDuplicates && item.uniqueIds.length > 0 ? item.uniqueIds[0] : `eval-${Math.random()}`;
+                    const itemEl = createTradeItemElement(item, uniqueId);
                     itemEl.classList.add('h-28');
+                    if (item.count > 1) {
+                        itemEl.innerHTML += `<div class="item-count" style="position: absolute; bottom: 4px; right: 4px; font-size: 0.8rem;">x${item.count}</div>`;
+                    }
                     itemEl.addEventListener('click', () => {
-                        moveItemToOffer(item.uniqueId);
+                        const itemToReturn = allowDuplicates ? item : state.collectedItems.find(i => i.uniqueId === uniqueId);
+                        state.itemSelectionCallback(itemToReturn);
                         closeModal(dom.itemSelectionModal);
                     });
                     dom.itemSelectionGrid.appendChild(itemEl);
                 });
-            }
+            };
+
+            dom.itemSelectionSearch.oninput = () => renderGrid(dom.itemSelectionSearch.value);
+            
+            renderGrid();
             dom.itemSelectionModal.classList.remove('hidden');
             dom.itemSelectionModal.classList.add('flex');
         }
+
 
         function moveItemToOffer(uniqueId) {
             if (state.currentTrade.playerOffer.length >= MAX_TRADE_SLOTS) return;
@@ -937,6 +1027,77 @@
             dom.confirmTradeButton.classList.add('hidden');
             dom.backToTradeButton.classList.add('hidden');
             dom.closeTradeResultButton.classList.remove('hidden');
+        }
+
+        // --- TRADE EVALUATOR LOGIC ---
+        function openTradeEvaluator() {
+            playSound('sound-click');
+            state.currentEval = { yourOffer: [], opponentOffer: [] };
+            renderTradeEvalUI();
+            dom.tradeEvalModal.classList.remove('hidden');
+            dom.tradeEvalModal.classList.add('flex');
+        }
+        
+        function renderTradeEvalUI() {
+            ['evalYourOfferGrid', 'evalOpponentOfferGrid'].forEach(gridId => {
+                const grid = dom[gridId];
+                grid.innerHTML = '';
+                const isYourGrid = gridId === 'evalYourOfferGrid';
+                const items = isYourGrid ? state.currentEval.yourOffer : state.currentEval.opponentOffer;
+                
+                items.forEach((item, index) => {
+                    const itemEl = createTradeItemElement(item, item.uniqueId);
+                    itemEl.addEventListener('click', () => {
+                        items.splice(index, 1);
+                        playSound('sound-delete');
+                        renderTradeEvalUI();
+                    });
+                    grid.appendChild(itemEl);
+                });
+
+                for(let i = items.length; i < MAX_TRADE_SLOTS; i++) {
+                    const placeholder = document.createElement('div');
+                    placeholder.className = 'trade-item placeholder';
+                    placeholder.textContent = '+';
+                    placeholder.addEventListener('click', () => {
+                        const targetList = isYourGrid ? state.currentEval.yourOffer : state.currentEval.opponentOffer;
+                        openItemSelectionModal({
+                            title: 'Выберите предмет для оценки',
+                            itemList: allTradeableItems,
+                            allowDuplicates: true,
+                            onSelect: (selectedItem) => {
+                                if (targetList.length < MAX_TRADE_SLOTS) {
+                                    targetList.push({ ...selectedItem, uniqueId: `eval-${Math.random()}` });
+                                    playSound('sound-click');
+                                    renderTradeEvalUI();
+                                }
+                            }
+                        });
+                    });
+                    grid.appendChild(placeholder);
+                }
+            });
+            calculateAndDisplayEvalResult();
+        }
+        
+        function calculateAndDisplayEvalResult() {
+            const yourValue = state.currentEval.yourOffer.reduce((sum, item) => sum + getItemValue(item), 0);
+            const opponentValue = state.currentEval.opponentOffer.reduce((sum, item) => sum + getItemValue(item), 0);
+            const percentage = yourValue > 0 ? ((opponentValue / yourValue) - 1) * 100 : (opponentValue > 0 ? Infinity : 0);
+
+            if (percentage === Infinity || percentage > 10000) {
+                dom.tradeEvalPercentage.textContent = `+∞%`;
+                dom.tradeEvalPercentage.className = 'text-3xl font-bold text-green-400';
+            } else if (percentage > 5) {
+                dom.tradeEvalPercentage.textContent = `+${percentage.toFixed(0)}%`;
+                dom.tradeEvalPercentage.className = 'text-3xl font-bold text-green-400';
+            } else if (percentage < -5) {
+                dom.tradeEvalPercentage.textContent = `${percentage.toFixed(0)}%`;
+                dom.tradeEvalPercentage.className = 'text-3xl font-bold text-red-400';
+            } else {
+                dom.tradeEvalPercentage.textContent = `${percentage > 0 ? '+' : ''}${percentage.toFixed(0)}%`;
+                dom.tradeEvalPercentage.className = 'text-3xl font-bold text-white';
+            }
         }
         
         // --- UI & INITIALIZATION ---
@@ -1114,6 +1275,7 @@
 
             dom.soundToggle.addEventListener('click', () => toggleMute(!state.isMuted) );
             
+            // Trade Sim Listeners
             dom.openTradeSimButton.addEventListener('click', () => { playSound('sound-click'); dom.tradeModal.classList.remove('hidden'); dom.tradeModal.classList.add('flex'); startNewTrade(); });
             dom.closeTradeModalButton.addEventListener('click', () => closeModal(dom.tradeModal));
             dom.declineTradeButton.addEventListener('click', startNewTrade);
@@ -1122,12 +1284,20 @@
             dom.confirmTradeButton.addEventListener('click', finalizeTrade);
             dom.closeTradeResultButton.addEventListener('click', () => { playSound('sound-click'); dom.tradeResultModal.classList.add('hidden'); dom.tradeResultModal.classList.remove('flex'); startNewTrade(); });
             
+            // Trade Eval Listeners
+            dom.openTradeEvalButton.addEventListener('click', openTradeEvaluator);
+            dom.closeTradeEvalModalButton.addEventListener('click', () => closeModal(dom.tradeEvalModal));
+            dom.resetTradeEvalButton.addEventListener('click', () => {
+                playSound('sound-delete');
+                state.currentEval = { yourOffer: [], opponentOffer: [] };
+                renderTradeEvalUI();
+            });
+
             dom.closeItemSelectionModalButton.addEventListener('click', () => closeModal(dom.itemSelectionModal));
             dom.itemSelectionModal.addEventListener('click', (e) => { if (e.target === dom.itemSelectionModal) closeModal(dom.itemSelectionModal); });
             dom.closeInfoModalButton.addEventListener('click', () => closeModal(dom.infoModal));
             dom.infoModal.addEventListener('click', (e) => { if (e.target === dom.infoModal) closeModal(dom.infoModal); });
 
-            // Event listeners for new modals
             dom.alertModalOk.addEventListener('click', () => closeModal(dom.alertModal));
             dom.confirmModalCancel.addEventListener('click', () => { playSound('sound-close'); hideConfirm(); });
             dom.confirmModalOk.addEventListener('click', () => {
