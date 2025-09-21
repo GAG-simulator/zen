@@ -1740,6 +1740,381 @@
                 "seedImage": "https://static.wikia.nocookie.net/growagarden/images/0/0e/Seed_thingy_flower.png/revision/latest?cb=20250708020910"
             }
         ]
+    },
+    "gourmet_seed_pack": {
+        "id": "gourmet_seed_pack",
+        "name": "Gourmet Seed Pack",
+        "image": "https://static.wikia.nocookie.net/growagarden/images/4/49/GourmetSeedPack.png/revision/latest?cb=20250802074516",
+        "rarity": "Event",
+        "rarityClass": "rarity-Event",
+        "type": "seed",
+        "items": [
+            {
+                "name": "Onion",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/0/08/OnionCrop.png/revision/latest?cb=20250803152059",
+                "chance": 40,
+                "rarity": "Uncommon",
+                "rarityClass": "rarity-Uncommon",
+                "type": "seed",
+                "seedImage": "https://static.wikia.nocookie.net/growagarden/images/5/51/OnionSeed.png/revision/latest?cb=20250802054515"
+            },
+            {
+                "name": "Jalapeno",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/9/90/JalapenoCrop.png/revision/latest?cb=20250803152131",
+                "chance": 25,
+                "rarity": "Rare",
+                "rarityClass": "rarity-Rare",
+                "type": "seed",
+                "seedImage": "https://static.wikia.nocookie.net/growagarden/images/1/1d/JalapenoSeed.png/revision/latest?cb=20250802061757"
+            },
+            {
+                "name": "Crown Melon",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/f/f4/CrownMelonCrop.png/revision/latest?cb=20250803152136",
+                "chance": 20,
+                "rarity": "Legendary",
+                "rarityClass": "rarity-Legendary",
+                "type": "seed",
+                "seedImage": "https://static.wikia.nocookie.net/growagarden/images/0/0e/CrownMelonSeed.png/revision/latest?cb=20250802061936"
+            },
+            {
+                "name": "Sugarglaze",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/2/2e/SugarglazeProduce.png/revision/latest?cb=20250802054755",
+                "chance": 10,
+                "rarity": "Mythical",
+                "rarityClass": "rarity-Mythical",
+                "type": "seed",
+                "seedImage": "https://static.wikia.nocookie.net/growagarden/images/f/fe/SugarglazeSeed.png/revision/latest?cb=20250802054756"
+            },
+            {
+                "name": "Tall Asparagus",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/9/96/TallAsparagusProduce.png/revision/latest?cb=20250802055333",
+                "chance": 4.5,
+                "rarity": "Mythical",
+                "rarityClass": "rarity-Mythical",
+                "type": "seed",
+                "seedImage": "https://static.wikia.nocookie.net/growagarden/images/d/d8/TallAsparagusSeed.png/revision/latest?cb=20250802055312"
+            },
+            {
+                "name": "Grand Tomato",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/3/3a/GrandTomatoProduce.png/revision/latest?cb=20250803152154",
+                "chance": 0.5,
+                "rarity": "Divine",
+                "rarityClass": "rarity-Divine",
+                "type": "seed",
+                "seedImage": "https://static.wikia.nocookie.net/growagarden/images/7/72/GrandTomatoSeed.png/revision/latest?cb=20250802055440"
+            }
+        ]
+    },
+    "sprout_seed_pack": {
+        "id": "sprout_seed_pack",
+        "name": "Sprout Seed Pack",
+        "image": "https://static.wikia.nocookie.net/growagarden/images/2/29/SproutSeedPack.png/revision/latest?cb=20250816074528",
+        "rarity": "Rare",
+        "rarityClass": "rarity-Rare",
+        "type": "seed",
+        "items": [
+            {
+                "name": "Flare Daisy",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/0/0c/FlareDaisyProduce.png/revision/latest?cb=20250816041556",
+                "chance": 40,
+                "rarity": "Uncommon",
+                "rarityClass": "rarity-Uncommon",
+                "type": "seed",
+                "seedImage": "https://static.wikia.nocookie.net/growagarden/images/2/28/FlareDaisySeed.png/revision/latest?cb=20250816041548"
+            },
+            {
+                "name": "Duskpuff",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/5/57/DuskpuffProduce.png/revision/latest?cb=20250816041400",
+                "chance": 25,
+                "rarity": "Rare",
+                "rarityClass": "rarity-Rare",
+                "type": "seed",
+                "seedImage": "https://static.wikia.nocookie.net/growagarden/images/8/84/DuskpuffSeed.png/revision/latest?cb=20250816041354"
+            },
+            {
+                "name": "Mangosteen",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/9/98/Mangosteenfruit.png/revision/latest?cb=20250816041233",
+                "chance": 20,
+                "rarity": "Legendary",
+                "rarityClass": "rarity-Legendary",
+                "type": "seed",
+                "seedImage": "https://static.wikia.nocookie.net/growagarden/images/d/da/MangosteenSeed.png/revision/latest?cb=20250816041249"
+            },
+            {
+                "name": "Poseidon Plant",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/f/f9/PoseidonPlantProduce.png/revision/latest?cb=20250816041144",
+                "chance": 10,
+                "rarity": "Mythical",
+                "rarityClass": "rarity-Mythical",
+                "type": "seed",
+                "seedImage": "https://static.wikia.nocookie.net/growagarden/images/d/d9/PoseidonPlantSeed.png/revision/latest?cb=20250816041108"
+            },
+            {
+                "name": "Gleamroot",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/3/31/GleamrootProduce.png/revision/latest?cb=20250816040617",
+                "chance": 4.5,
+                "rarity": "Mythical",
+                "rarityClass": "rarity-Mythical",
+                "type": "seed",
+                "seedImage": "https://static.wikia.nocookie.net/growagarden/images/0/00/GleamrootSeed.png/revision/latest?cb=20250816040609"
+            },
+            {
+                "name": "Princess Thorn",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/4/4d/PrincessThornProduce.png/revision/latest?cb=20250816040329",
+                "chance": 0.5,
+                "rarity": "Divine",
+                "rarityClass": "rarity-Divine",
+                "type": "seed",
+                "seedImage": "https://static.wikia.nocookie.net/growagarden/images/4/4f/PrincessThornSeed.png/revision/latest?cb=20250816040340"
+            }
+        ]
+    },
+    "enchanted_seed_pack": {
+        "id": "enchanted_seed_pack",
+        "name": "Enchanted Seed Pack",
+        "image": "https://static.wikia.nocookie.net/growagarden/images/e/ec/Fairy_Seed_Pack.png/revision/latest?cb=20250830110150",
+        "rarity": "Rare",
+        "rarityClass": "rarity-Rare",
+        "type": "seed",
+        "items": [
+            {
+                "name": "Sunbulb",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/9/99/SunbulbProduce.png/revision/latest?cb=20250830033042",
+                "chance": 40,
+                "rarity": "Uncommon",
+                "rarityClass": "rarity-Uncommon",
+                "type": "seed",
+                "seedImage": "https://static.wikia.nocookie.net/growagarden/images/3/30/SunbulbSeed.png/revision/latest?cb=20250830032946"
+            },
+            {
+                "name": "Glowthorn",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/f/fc/Glowthorn_Produce.png/revision/latest?cb=20250830033513",
+                "chance": 25,
+                "rarity": "Legendary",
+                "rarityClass": "rarity-Legendary",
+                "type": "seed",
+                "seedImage": "https://static.wikia.nocookie.net/growagarden/images/d/d2/Glowthorn_Seed.png/revision/latest?cb=20250830033455"
+            },
+            {
+                "name": "Lightshoot",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/1/1e/Lightshoot.png/revision/latest?cb=20250823050137",
+                "chance": 20,
+                "rarity": "Rare",
+                "rarityClass": "rarity-Rare",
+                "type": "seed",
+                "seedImage": "https://static.wikia.nocookie.net/growagarden/images/1/18/LightshootSeed.png/revision/latest?cb=20250823050138"
+            },
+            {
+                "name": "Briar Rose",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/7/78/BriarRose_Produce.png/revision/latest?cb=20250830034645",
+                "chance": 10,
+                "rarity": "Mythical",
+                "rarityClass": "rarity-Mythical",
+                "type": "seed",
+                "seedImage": "https://static.wikia.nocookie.net/growagarden/images/b/b2/BriarRose_Seed.png/revision/latest?cb=20250830034656"
+            },
+            {
+                "name": "Spirit Flower",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/a/a2/SpiritFlower_Produce.png/revision/latest?cb=20250830034250",
+                "chance": 4.5,
+                "rarity": "Divine",
+                "rarityClass": "rarity-Divine",
+                "type": "seed",
+                "seedImage": "https://static.wikia.nocookie.net/growagarden/images/4/46/SpiritFlower_Seed.png/revision/latest?cb=20250830034231"
+            },
+            {
+                "name": "Wispwing",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/a/a5/Wispwing_Produce.png/revision/latest?cb=20250830033807",
+                "chance": 0.5,
+                "rarity": "Prismatic",
+                "rarityClass": "rarity-Prismatic",
+                "type": "seed",
+                "seedImage": "https://static.wikia.nocookie.net/growagarden/images/4/4b/Wispwing_Seed.png/revision/latest?cb=20250903145521"
+            }
+        ]
+    },
+    "culinarian_chest": {
+        "id": "culinarian_chest",
+        "name": "Culinarian Chest",
+        "image": "https://static.wikia.nocookie.net/growagarden/images/1/1f/Culinarian_Chest.png/revision/latest?cb=20250809053035",
+        "rarity": "Event",
+        "rarityClass": "rarity-Event",
+        "type": "crate",
+        "items": [
+            {
+                "name": "Rhubarb",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/e/ee/RhubarbProduce.png/revision/latest?cb=20250809052333",
+                "chance": 34.5,
+                "rarity": "Uncommon",
+                "rarityClass": "rarity-Uncommon",
+                "type": "seed",
+                "seedImage": "https://static.wikia.nocookie.net/growagarden/images/c/cf/RhubarbSeed.png/revision/latest?cb=20250809052343"
+            },
+            {
+                "name": "Bacon Pig",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/b/b1/BaconPig.png/revision/latest?cb=20250809053320",
+                "chance": 34.5,
+                "rarity": "Uncommon",
+                "rarityClass": "rarity-Uncommon",
+                "type": "animal"
+            },
+            {
+                "name": "Badlands Pepper",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/6/6d/BadlandsPepper.png/revision/latest?cb=20250809053159",
+                "chance": 14.5,
+                "rarity": "Legendary",
+                "rarityClass": "rarity-Legendary",
+                "type": "seed",
+                "seedImage": "https://static.wikia.nocookie.net/growagarden/images/0/0f/BadlandsPepperSeed.png/revision/latest?cb=20250809053150"
+            },
+            {
+                "name": "Hotdog Daschund",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/2/24/HotdogDaschund.png/revision/latest?cb=20250809053313",
+                "chance": 14.5,
+                "rarity": "Legendary",
+                "rarityClass": "rarity-Legendary",
+                "type": "animal"
+            },
+            {
+                "name": "King Cabbage",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/b/b4/KingCabbageProduce.png/revision/latest?cb=20250809052756",
+                "chance": 1,
+                "rarity": "Divine",
+                "rarityClass": "rarity-Divine",
+                "type": "seed",
+                "seedImage": "https://static.wikia.nocookie.net/growagarden/images/6/65/KingCabbageSeed.png/revision/latest?cb=20250809052740"
+            },
+            {
+                "name": "Lobster Thermidor",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/d/dd/LobsterThermidor.png/revision/latest?cb=20250809052316",
+                "chance": 1,
+                "rarity": "Divine",
+                "rarityClass": "rarity-Divine",
+                "type": "animal"
+            }
+        ]
+    },
+    "skyroot_chest": {
+        "id": "skyroot_chest",
+        "name": "Skyroot Chest",
+        "image": "https://static.wikia.nocookie.net/growagarden/images/2/22/SkyrootChest.png/revision/latest?cb=20250829124148",
+        "rarity": "Event",
+        "rarityClass": "rarity-Event",
+        "type": "crate",
+        "items": [
+            {
+                "name": "Crown Of Thorns",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/f/f8/CrownOfThorns.png/revision/latest?cb=20250823050523",
+                "chance": 34.5,
+                "rarity": "Uncommon",
+                "rarityClass": "rarity-Uncommon",
+                "type": "seed",
+                "seedImage": "https://static.wikia.nocookie.net/growagarden/images/1/12/KingOfThornsSeed.png/revision/latest?cb=20250823050536"
+            },
+            {
+                "name": "Elk",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/3/32/Elk.png/revision/latest?cb=20250823062017",
+                "chance": 34.5,
+                "rarity": "Uncommon",
+                "rarityClass": "rarity-Uncommon",
+                "type": "animal"
+            },
+            {
+                "name": "Calla Lily",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/4/42/CallaLilly.png/revision/latest?cb=20250823044605",
+                "chance": 14.5,
+                "rarity": "Legendary",
+                "rarityClass": "rarity-Legendary",
+                "type": "seed",
+                "seedImage": "https://static.wikia.nocookie.net/growagarden/images/b/b0/CallaLilySeed.png/revision/latest?cb=20250823044745"
+            },
+            {
+                "name": "Mandrake",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/2/2f/MandrakePet.png/revision/latest?cb=20250823061956",
+                "chance": 14.5,
+                "rarity": "Legendary",
+                "rarityClass": "rarity-Legendary",
+                "type": "animal"
+            },
+            {
+                "name": "Cyclamen",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/8/86/Cyclamen.png/revision/latest?cb=20250816080022",
+                "chance": 1,
+                "rarity": "Divine",
+                "rarityClass": "rarity-Divine",
+                "type": "seed",
+                "seedImage": "https://static.wikia.nocookie.net/growagarden/images/9/97/CyclamenSeed.png/revision/latest?cb=20250816080040"
+            },
+            {
+                "name": "Griffin",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/7/7b/GriffinPet.png/revision/latest?cb=20250823061936",
+                "chance": 1,
+                "rarity": "Divine",
+                "rarityClass": "rarity-Divine",
+                "type": "animal"
+            }
+        ]
+    },
+    "enchanted_chest": {
+        "id": "enchanted_chest",
+        "name": "Enchanted Chest",
+        "image": "https://static.wikia.nocookie.net/growagarden/images/f/f8/EnchantedChest.png/revision/latest?cb=20250906070253",
+        "rarity": "Event",
+        "rarityClass": "rarity-Event",
+        "type": "crate",
+        "items": [
+            {
+                "name": "Emerald Bud",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/1/13/EmeraldBudProduce.png/revision/latest?cb=20250830124328",
+                "chance": 34.5,
+                "rarity": "Uncommon",
+                "rarityClass": "rarity-Uncommon",
+                "type": "seed",
+                "seedImage": "https://static.wikia.nocookie.net/growagarden/images/9/9f/EmeraldBudSeed.png/revision/latest?cb=20250830124320"
+            },
+            {
+                "name": "Cardinal",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/d/d2/Cardinal.png/revision/latest?cb=20250906093419",
+                "chance": 34.5,
+                "rarity": "Common",
+                "rarityClass": "rarity-Common",
+                "type": "animal"
+            },
+            {
+                "name": "Pyracantha",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/2/27/PyracanthaProduce.png/revision/latest?cb=20250906065836",
+                "chance": 14.5,
+                "rarity": "Legendary",
+                "rarityClass": "rarity-Legendary",
+                "type": "seed",
+                "seedImage": "https://static.wikia.nocookie.net/growagarden/images/d/de/PyracanthaSeed.png/revision/latest?cb=20250906065841"
+            },
+            {
+                "name": "Shroomie",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/f/ff/Shoomie.png/revision/latest?cb=20250906093321",
+                "chance": 14.5,
+                "rarity": "Legendary",
+                "rarityClass": "rarity-Legendary",
+                "type": "animal"
+            },
+            {
+                "name": "Aetherfruit",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/7/79/AetherfruitProduce.png/revision/latest?cb=20250906071050",
+                "chance": 1,
+                "rarity": "Divine",
+                "rarityClass": "rarity-Divine",
+                "type": "seed",
+                "seedImage": "https://static.wikia.nocookie.net/growagarden/images/7/72/AetherfruitSeed.png/revision/latest?cb=20250906071040"
+            },
+            {
+                "name": "Phoenix",
+                "image": "https://static.wikia.nocookie.net/growagarden/images/c/c1/Phoenix.png/revision/latest?cb=20250906070055",
+                "chance": 1,
+                "rarity": "Divine",
+                "rarityClass": "rarity-Divine",
+                "type": "animal"
+            }
+        ]
     }
 };
 
